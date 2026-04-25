@@ -1,0 +1,16 @@
+{
+  "menu": [
+    { "id": "home", "icon": "🏠", "label": { "en": "Home", "hi": "होम" }, "enabled": true, "showInNav": true },
+    { "id": "about", "icon": "ℹ️", "label": { "en": "About Us", "hi": "हमारे बारे में" }, "enabled": true, "showInNav": true },
+    { "id": "activities", "icon": "🎯", "label": { "en": "Activities", "hi": "गतिविधियाँ" }, "enabled": true, "showInNav": true },
+    { "id": "gallery", "icon": "🖼️", "label": { "en": "Gallery", "hi": "गैलरी" }, "enabled": true, "showInNav": true },
+    { "id": "involved", "icon": "🤝", "label": { "en": "Get Involved", "hi": "जुड़ें" }, "enabled": false, "showInNav": false },
+    { "id": "contact", "icon": "📞", "label": { "en": "Contact", "hi": "संपर्क" }, "enabled": false, "showInNav": false }
+  ],
+  "donateCta": {
+    "show": false,
+    "targetId": "involved",
+    "label": { "en": "Donate", "hi": "दान करें" },
+    "suffix": "🙏"
+  }
+}
