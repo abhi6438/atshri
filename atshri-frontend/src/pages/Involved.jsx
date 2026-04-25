@@ -1,14 +1,32 @@
 import { useState } from 'react';
+import { submitVolunteer } from '../api';
 
 const DONATION_AMOUNTS = [101, 251, 501, 1001];
 
 export function PageInvolved({ lang }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', msg: '' });
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState('');
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    setSent(true);
+    setErr('');
+    setLoading(true);
+    try {
+      await submitVolunteer({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: form.msg,
+      });
+      setSent(true);
+      setForm({ name: '', email: '', phone: '', msg: '' });
+    } catch {
+      setErr(lang === 'en' ? 'Failed to submit. Please try again.' : 'सबमिट करने में समस्या हुई।');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateField = field => e => setForm(prev => ({ ...prev, [field]: e.target.value }));
@@ -91,8 +109,11 @@ export function PageInvolved({ lang }) {
                   rows={3} value={form.msg} onChange={updateField('msg')}
                   placeholder={lang === 'en' ? 'Why do you want to volunteer?' : 'आप स्वयंसेवक क्यों बनना चाहते हैं?'}
                 />
-                <button type="submit" className="bsf" style={{ padding: 13, fontSize: 15 }}>
-                  {lang === 'en' ? 'Join as Volunteer 🙏' : 'स्वयंसेवक बनें 🙏'}
+                {err && <p style={{ color: '#DC2626', fontSize: 13 }}>{err}</p>}
+                <button type="submit" className="bsf" style={{ padding: 13, fontSize: 15 }} disabled={loading}>
+                  {loading
+                    ? (lang === 'en' ? 'Submitting...' : 'सबमिट हो रहा है...')
+                    : (lang === 'en' ? 'Join as Volunteer 🙏' : 'स्वयंसेवक बनें 🙏')}
                 </button>
               </form>
             )}

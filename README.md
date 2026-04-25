@@ -1,5 +1,10 @@
 # Atshri Website
 
+This repository is now split into two app folders:
+
+- `atshri-frontend` - React + Vite web app
+- `atshri-backend` - FastAPI + SQLAlchemy API
+
 Atshri is a bilingual (English/Hindi) community trust website built with React and Vite.
 It showcases seva activities, upcoming events, team information, gallery, and contact details,
 with an internal admin dashboard for content updates.
@@ -17,7 +22,7 @@ with an internal admin dashboard for content updates.
 - Pages: Home, About, Activities, Gallery, Get Involved, Contact.
 - Dynamic menu visibility and page enable/disable controls.
 - Admin login and admin dashboard for managing website data.
-- Data-driven content using local source files in `src/data`.
+- Data-driven content: **bundled** in `atshri-frontend/src/data/` and optionally **mirrored** in the FastAPI database.
 
 ## Admin Dashboard Capabilities
 
@@ -41,7 +46,28 @@ with an internal admin dashboard for content updates.
   - Logo name supports Hindi form.
   - Tagline/slogan reflects selected language where applied.
 - Improved mobile home stats layout with better responsive grid behavior.
-- Reverted experimental pathname routing changes to keep current stable hash-based navigation.
+
+## Static data vs database
+
+- **Default:** the site reads from `atshri-frontend/src/data/*` (`VITE_USE_API_CONTENT` unset or `false`).
+- **Optional:** set `VITE_USE_API_CONTENT=true` in `atshri-frontend/.env` to load public content from `GET /content` after you have seeded the backend.
+
+Export everything under `src/data` into one JSON file for the backend:
+
+```bash
+cd atshri-frontend
+npm run dump:static
+```
+
+Load that JSON into SQLite / Postgres:
+
+```bash
+cd atshri-backend
+rm -f atshri.db   # only if local SQLite schema changed
+python seed.py
+```
+
+PostgreSQL schema tweak for menu columns: `atshri-backend/sql/001_menu_items_nav_flags.sql`
 
 ## Routing Note
 
@@ -67,16 +93,19 @@ so refresh/direct open of deep links works correctly.
 
 ## Project Structure (High Level)
 
-- `src/App.jsx` - app state, page switching, language/theme integration
-- `src/pages/` - page-level UI
-- `src/components/` - reusable UI (layout, logo, cards, controls)
-- `src/admin/AdminDash.jsx` - admin tools for content management
-- `src/data/` - source content (menu, activities, team, stats, values, categories)
-- `src/utils/navigation.js` - route helpers (hash parsing and page resolution)
+- `atshri-frontend/src/App.jsx` - app state, page switching, language/theme integration
+- `atshri-frontend/src/pages/` - page-level UI
+- `atshri-frontend/src/components/` - reusable UI (layout, logo, cards, controls)
+- `atshri-frontend/src/admin/AdminDash.jsx` - admin tools for content management
+- `atshri-frontend/src/data/` - source content (menu, activities, team, stats, values, categories)
+- `atshri-frontend/src/utils/navigation.js` - route helpers
+- `atshri-backend/main.py` - FastAPI app entrypoint
+- `atshri-backend/routers/` - public/admin API routes
 
 ## Run Locally
 
 ```bash
+cd atshri-frontend
 npm install
 npm run dev
 ```
@@ -84,6 +113,7 @@ npm run dev
 ## Build
 
 ```bash
+cd atshri-frontend
 npm run build
 npm run preview
 ```

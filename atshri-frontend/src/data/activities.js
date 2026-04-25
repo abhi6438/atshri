@@ -240,7 +240,7 @@ export const ACTIVITIES = [
     upcoming: true,
   },
   {
-    id: 2,
+    id: 17,
     icon: '🧣',
     category: 'blanket',
     heading: { en: 'Winter Blanket Distribution 2026', hi: 'शीत कम्बल वितरण 2026' },

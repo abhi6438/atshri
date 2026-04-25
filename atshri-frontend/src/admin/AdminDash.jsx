@@ -1,4 +1,17 @@
 import { useState } from 'react';
+import {
+  adminCreateActivity,
+  adminCreateStat,
+  adminCreateTeamMember,
+  adminDeleteActivity,
+  adminDeleteStat,
+  adminDeleteTeamMember,
+  adminUpdateActivity,
+  adminUpdateCategory,
+  adminUpdateMenu,
+  adminUpdateStat,
+  adminUpdateTeamMember,
+} from '../api';
 import { Logo } from '../components/common/Logo';
 import { Toggle } from '../components/common/Toggle';
 import { catOf } from '../utils/catOf';
@@ -43,6 +56,7 @@ const DEFAULT_STAT_FORM = {
 };
 
 export function AdminDash({
+  adminToken,
   lang,
   menu,
   setMenu,
@@ -74,26 +88,106 @@ export function AdminDash({
   const [editingStatId, setEditingStatId] = useState(null);
   const [statEditDraft, setStatEditDraft] = useState(null);
 
-  const toggle = (arr, setArr, id) =>
-    setArr(arr.map(x => x.id === id ? { ...x, visible: !x.visible } : x));
+  const persistToggleActivityVisible = async id => {
+    const row = acts.find(x => x.id === id);
+    if (!row) return;
+    const next = !row.visible;
+    if (adminToken) {
+      try {
+        await adminUpdateActivity(adminToken, id, { visible: next });
+      } catch (e) {
+        alert(e.message);
+        return;
+      }
+    }
+    setActs(prev => prev.map(x => (x.id === id ? { ...x, visible: next } : x)));
+  };
 
-  const toggleActField = (id, key) =>
-    setActs(arr => arr.map(x => (x.id === id ? { ...x, [key]: !x[key] } : x)));
+  const toggleActField = async (id, key) => {
+    const row = acts.find(x => x.id === id);
+    if (!row) return;
+    const next = !row[key];
+    if (adminToken) {
+      try {
+        await adminUpdateActivity(adminToken, id, { [key]: next });
+      } catch (e) {
+        alert(e.message);
+        return;
+      }
+    }
+    setActs(prev => prev.map(x => (x.id === id ? { ...x, [key]: next } : x)));
+  };
 
-  const toggleMenuField = (id, field) => {
-    setMenu(prev =>
-      prev.map(x => {
-        if (x.id !== id) return x;
-        const cur = x[field];
-        const on = cur === undefined ? true : cur;
-        return { ...x, [field]: !on };
-      }),
-    );
+  const toggleMenuField = async (id, field) => {
+    const cur = menu.find(x => x.id === id);
+    if (!cur) return;
+    const on = cur[field] === undefined ? true : !!cur[field];
+    const nextItem = { ...cur, [field]: !on };
+    const live = nextItem.enabled !== false;
+    const inNav = nextItem.showInNav !== false;
+    if (adminToken) {
+      try {
+        await adminUpdateMenu(adminToken, id, {
+          page_enabled: live,
+          show_in_nav: inNav,
+          visible: live,
+        });
+      } catch (e) {
+        alert(e.message);
+        return;
+      }
+    }
+    setMenu(prev => prev.map(x => (x.id === id ? nextItem : x)));
+  };
+
+  const persistToggleCategoryVisible = async id => {
+    const row = cats.find(x => x.id === id);
+    if (!row) return;
+    const next = !row.visible;
+    if (adminToken) {
+      try {
+        await adminUpdateCategory(adminToken, id, { visible: next });
+      } catch (e) {
+        alert(e.message);
+        return;
+      }
+    }
+    setCats(prev => prev.map(x => (x.id === id ? { ...x, visible: next } : x)));
+  };
+
+  const persistToggleTeamVisible = async id => {
+    const row = team.find(x => x.id === id);
+    if (!row) return;
+    const next = !row.visible;
+    if (adminToken) {
+      try {
+        await adminUpdateTeamMember(adminToken, id, { visible: next });
+      } catch (e) {
+        alert(e.message);
+        return;
+      }
+    }
+    setTeam(prev => prev.map(x => (x.id === id ? { ...x, visible: next } : x)));
+  };
+
+  const persistToggleStatVisible = async id => {
+    const row = stats.find(x => x.id === id);
+    if (!row) return;
+    const next = !row.visible;
+    if (adminToken) {
+      try {
+        await adminUpdateStat(adminToken, id, { visible: next });
+      } catch (e) {
+        alert(e.message);
+        return;
+      }
+    }
+    setStats(prev => prev.map(x => (x.id === id ? { ...x, visible: next } : x)));
   };
 
   const updateForm = field => e => setForm(f => ({ ...f, [field]: e.target.value }));
 
-  const addAct = e => {
+  const addAct = async e => {
     e.preventDefault();
     const newActivity = {
       id: Date.now(),
@@ -107,39 +201,74 @@ export function AdminDash({
       featured: form.featured,
       upcoming: form.upcoming,
     };
-    setActs(prev => [newActivity, ...prev]);
+    if (adminToken) {
+      try {
+        const created = await adminCreateActivity(adminToken, newActivity, 0);
+        setActs(prev => [created, ...prev]);
+      } catch (err) {
+        alert(err.message);
+        return;
+      }
+    } else {
+      setActs(prev => [newActivity, ...prev]);
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
     setForm({ ...DEFAULT_FORM, date: new Date().toISOString().split('T')[0] });
   };
 
-  const delAct = id => {
-    if (window.confirm('Delete this activity?')) {
-      setActs(prev => prev.filter(a => a.id !== id));
+  const delAct = async id => {
+    if (!window.confirm('Delete this activity?')) return;
+    if (adminToken) {
+      try {
+        await adminDeleteActivity(adminToken, id);
+      } catch (e) {
+        alert(e.message);
+        return;
+      }
     }
+    setActs(prev => prev.filter(a => a.id !== id));
   };
 
   const updateTeamForm = field => e => setTeamForm(f => ({ ...f, [field]: e.target.value }));
 
-  const addTeamMember = e => {
+  const addTeamMember = async e => {
     e.preventDefault();
     if (!teamForm.name.trim()) return;
     const initials =
       (teamForm.initials || teamForm.name.replace(/\s+/g, '').slice(0, 3))
         .toUpperCase()
         .slice(0, 6);
-    setTeam(prev => [
-      {
-        id: Date.now(),
-        name: teamForm.name.trim(),
-        initials,
-        role: { en: teamForm.role_en.trim(), hi: teamForm.role_hi.trim() },
-        badge: teamForm.badge.trim() || '⭐',
-        desc: { en: teamForm.desc_en.trim(), hi: teamForm.desc_hi.trim() },
-        visible: teamForm.visible,
-      },
-      ...prev,
-    ]);
+    const local = {
+      id: Date.now(),
+      name: teamForm.name.trim(),
+      initials,
+      role: { en: teamForm.role_en.trim(), hi: teamForm.role_hi.trim() },
+      badge: teamForm.badge.trim() || '⭐',
+      desc: { en: teamForm.desc_en.trim(), hi: teamForm.desc_hi.trim() },
+      visible: teamForm.visible,
+    };
+    if (adminToken) {
+      try {
+        const created = await adminCreateTeamMember(adminToken, {
+          name: local.name,
+          initials: local.initials,
+          role_en: local.role.en,
+          role_hi: local.role.hi,
+          badge: local.badge,
+          desc_en: local.desc.en,
+          desc_hi: local.desc.hi,
+          visible: local.visible,
+          sort_order: 0,
+        });
+        setTeam(prev => [created, ...prev]);
+      } catch (err) {
+        alert(err.message);
+        return;
+      }
+    } else {
+      setTeam(prev => [local, ...prev]);
+    }
     setTeamForm({ ...DEFAULT_TEAM_FORM });
     setTeamSaved(true);
     setTimeout(() => setTeamSaved(false), 2500);
@@ -167,24 +296,42 @@ export function AdminDash({
     setTeamEditDraft(null);
   };
 
-  const saveTeamEdit = e => {
+  const saveTeamEdit = async e => {
     e?.preventDefault();
     if (editingTeamId == null || !teamEditDraft) return;
     const initials = (teamEditDraft.initials || teamEditDraft.name.replace(/\s+/g, '').slice(0, 3))
       .toUpperCase()
       .slice(0, 6);
+    const patch = {
+      name: teamEditDraft.name.trim(),
+      initials,
+      badge: teamEditDraft.badge.trim() || '⭐',
+      role_en: teamEditDraft.role_en.trim(),
+      role_hi: teamEditDraft.role_hi.trim(),
+      desc_en: teamEditDraft.desc_en.trim(),
+      desc_hi: teamEditDraft.desc_hi.trim(),
+      visible: teamEditDraft.visible,
+    };
+    if (adminToken) {
+      try {
+        await adminUpdateTeamMember(adminToken, editingTeamId, patch);
+      } catch (err) {
+        alert(err.message);
+        return;
+      }
+    }
     setTeam(prev =>
       prev.map(x =>
         x.id !== editingTeamId
           ? x
           : {
               ...x,
-              name: teamEditDraft.name.trim(),
-              initials,
-              badge: teamEditDraft.badge.trim() || '⭐',
-              role: { en: teamEditDraft.role_en.trim(), hi: teamEditDraft.role_hi.trim() },
-              desc: { en: teamEditDraft.desc_en.trim(), hi: teamEditDraft.desc_hi.trim() },
-              visible: teamEditDraft.visible,
+              name: patch.name,
+              initials: patch.initials,
+              badge: patch.badge,
+              role: { en: patch.role_en, hi: patch.role_hi },
+              desc: { en: patch.desc_en, hi: patch.desc_hi },
+              visible: patch.visible,
             },
       ),
     );
@@ -194,28 +341,50 @@ export function AdminDash({
   const updateTeamEditDraft = field => e =>
     setTeamEditDraft(d => (d ? { ...d, [field]: e.target.value } : d));
 
-  const delTeamMember = id => {
-    if (window.confirm('Remove this team member?')) {
-      if (editingTeamId === id) cancelTeamEdit();
-      setTeam(prev => prev.filter(t => t.id !== id));
+  const delTeamMember = async id => {
+    if (!window.confirm('Remove this team member?')) return;
+    if (editingTeamId === id) cancelTeamEdit();
+    if (adminToken) {
+      try {
+        await adminDeleteTeamMember(adminToken, id);
+      } catch (e) {
+        alert(e.message);
+        return;
+      }
     }
+    setTeam(prev => prev.filter(t => t.id !== id));
   };
 
   const updateStatForm = field => e => setStatForm(f => ({ ...f, [field]: e.target.value }));
 
-  const addStatRow = e => {
+  const addStatRow = async e => {
     e.preventDefault();
     if (!statForm.label_en.trim() && !statForm.label_hi.trim()) return;
-    setStats(prev => [
-      {
-        id: Date.now(),
-        icon: statForm.icon.trim() || '📌',
-        value: (statForm.value || '0').trim(),
-        label: { en: statForm.label_en.trim(), hi: statForm.label_hi.trim() },
-        visible: statForm.visible,
-      },
-      ...prev,
-    ]);
+    const local = {
+      id: Date.now(),
+      icon: statForm.icon.trim() || '📌',
+      value: (statForm.value || '0').trim(),
+      label: { en: statForm.label_en.trim(), hi: statForm.label_hi.trim() },
+      visible: statForm.visible,
+    };
+    if (adminToken) {
+      try {
+        const created = await adminCreateStat(adminToken, {
+          icon: local.icon,
+          value: local.value,
+          label_en: local.label.en,
+          label_hi: local.label.hi,
+          visible: local.visible,
+          sort_order: 0,
+        });
+        setStats(prev => [created, ...prev]);
+      } catch (err) {
+        alert(err.message);
+        return;
+      }
+    } else {
+      setStats(prev => [local, ...prev]);
+    }
     setStatForm({ ...DEFAULT_STAT_FORM });
     setStatSaved(true);
     setTimeout(() => setStatSaved(false), 2500);
@@ -240,19 +409,34 @@ export function AdminDash({
     setStatEditDraft(null);
   };
 
-  const saveStatEdit = e => {
+  const saveStatEdit = async e => {
     e?.preventDefault();
     if (editingStatId == null || !statEditDraft) return;
+    const patch = {
+      icon: statEditDraft.icon.trim() || '📌',
+      value: statEditDraft.value.trim(),
+      label_en: statEditDraft.label_en.trim(),
+      label_hi: statEditDraft.label_hi.trim(),
+      visible: statEditDraft.visible,
+    };
+    if (adminToken) {
+      try {
+        await adminUpdateStat(adminToken, editingStatId, patch);
+      } catch (err) {
+        alert(err.message);
+        return;
+      }
+    }
     setStats(prev =>
       prev.map(x =>
         x.id !== editingStatId
           ? x
           : {
               ...x,
-              icon: statEditDraft.icon.trim() || '📌',
-              value: statEditDraft.value.trim(),
-              label: { en: statEditDraft.label_en.trim(), hi: statEditDraft.label_hi.trim() },
-              visible: statEditDraft.visible,
+              icon: patch.icon,
+              value: patch.value,
+              label: { en: patch.label_en, hi: patch.label_hi },
+              visible: patch.visible,
             },
       ),
     );
@@ -262,11 +446,18 @@ export function AdminDash({
   const updateStatEditDraft = field => e =>
     setStatEditDraft(d => (d ? { ...d, [field]: e.target.value } : d));
 
-  const delStatRow = id => {
-    if (window.confirm('Remove this stat from the homepage?')) {
-      if (editingStatId === id) cancelStatEdit();
-      setStats(prev => prev.filter(s => s.id !== id));
+  const delStatRow = async id => {
+    if (!window.confirm('Remove this stat from the homepage?')) return;
+    if (editingStatId === id) cancelStatEdit();
+    if (adminToken) {
+      try {
+        await adminDeleteStat(adminToken, id);
+      } catch (e) {
+        alert(e.message);
+        return;
+      }
     }
+    setStats(prev => prev.filter(s => s.id !== id));
   };
 
   const upload = async e => {
@@ -375,11 +566,11 @@ export function AdminDash({
                     </div>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: 12, color: 'var(--mid)', fontWeight: 600 }}>{a.visible ? 'Visible' : 'Hidden'}</span>
-                      <Toggle on={a.visible} onChange={() => toggle(acts, setActs, a.id)} />
+                      <Toggle on={a.visible} onChange={() => void persistToggleActivityVisible(a.id)} />
                       <span style={{ fontSize: 11, color: 'var(--mid)', fontWeight: 600 }}>⭐</span>
-                      <Toggle on={!!a.featured} onChange={() => toggleActField(a.id, 'featured')} />
+                      <Toggle on={!!a.featured} onChange={() => void toggleActField(a.id, 'featured')} />
                       <span style={{ fontSize: 11, color: 'var(--mid)', fontWeight: 600 }}>📅</span>
-                      <Toggle on={!!a.upcoming} onChange={() => toggleActField(a.id, 'upcoming')} />
+                      <Toggle on={!!a.upcoming} onChange={() => void toggleActField(a.id, 'upcoming')} />
                       <button
                         onClick={() => delAct(a.id)}
                         style={{ background: '#FEE2E2', border: 'none', color: '#EF4444', padding: '7px 13px', borderRadius: 7, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, fontSize: 12 }}
@@ -498,11 +689,11 @@ export function AdminDash({
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 16 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{ fontSize: 12, fontWeight: 600, color: live ? 'var(--sf)' : '#9CA3AF', width: 72 }}>Live</span>
-                        <Toggle on={live} onChange={() => toggleMenuField(m.id, 'enabled')} />
+                        <Toggle on={live} onChange={() => void toggleMenuField(m.id, 'enabled')} />
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{ fontSize: 12, fontWeight: 600, color: inNav ? 'var(--sf)' : '#9CA3AF', width: 72 }}>Top nav</span>
-                        <Toggle on={inNav} onChange={() => toggleMenuField(m.id, 'showInNav')} />
+                        <Toggle on={inNav} onChange={() => void toggleMenuField(m.id, 'showInNav')} />
                       </div>
                     </div>
                   </div>
@@ -562,7 +753,7 @@ export function AdminDash({
                       {c.name.hi} · <code style={{ fontSize: 11, background: '#F3F4F6', padding: '1px 5px', borderRadius: 4 }}>{c.id}</code>
                     </div>
                   </div>
-                  <Toggle on={c.visible} onChange={() => toggle(cats, setCats, c.id)} />
+                  <Toggle on={c.visible} onChange={() => void persistToggleCategoryVisible(c.id)} />
                 </div>
               ))}
             </div>
@@ -661,7 +852,7 @@ export function AdminDash({
                           <span>{m.role.hi}</span>
                         </td>
                         <td style={{ padding: '12px 14px', textAlign: 'center', verticalAlign: 'middle' }}>
-                          <Toggle on={m.visible} onChange={() => toggle(team, setTeam, m.id)} />
+                          <Toggle on={m.visible} onChange={() => void persistToggleTeamVisible(m.id)} />
                         </td>
                         <td style={{ padding: '12px 14px', textAlign: 'right', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                           <button
@@ -804,7 +995,7 @@ export function AdminDash({
                           <div style={{ fontSize: 11, marginTop: 4 }}>id {s.id}</div>
                         </td>
                         <td style={{ padding: '12px 14px', textAlign: 'center', verticalAlign: 'middle' }}>
-                          <Toggle on={s.visible} onChange={() => toggle(stats, setStats, s.id)} />
+                          <Toggle on={s.visible} onChange={() => void persistToggleStatVisible(s.id)} />
                         </td>
                         <td style={{ padding: '12px 14px', textAlign: 'right', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                           <button

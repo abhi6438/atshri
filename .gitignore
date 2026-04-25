@@ -1,6 +1,12 @@
 node_modules/
 dist/
+__pycache__/
+*.py[cod]
+*.pyc
 .env
 .env.local
 .DS_Store
 *.local
+*.db
+atshri-backend/.venv/
+.venv/

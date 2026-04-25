@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { submitContact } from '../api';
 
 const CONTACT_INFO = [
   { icon: '📍', en: 'Location', hi: 'स्थान',  value: 'Rewa, Madhya Pradesh, India' },
@@ -9,8 +10,24 @@ const CONTACT_INFO = [
 export function PageContact({ lang }) {
   const [form, setForm] = useState({ name: '', email: '', msg: '' });
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState('');
 
   const updateField = field => e => setForm(prev => ({ ...prev, [field]: e.target.value }));
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setErr('');
+    setLoading(true);
+    try {
+      await submitContact({ name: form.name, email: form.email, message: form.msg });
+      setSent(true);
+      setForm({ name: '', email: '', msg: '' });
+    } catch {
+      setErr(lang === 'en' ? 'Failed to send. Please try again.' : 'भेजने में समस्या हुई। पुनः प्रयास करें।');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div style={{ paddingTop: 64 }}>
@@ -85,13 +102,16 @@ export function PageContact({ lang }) {
                 <button
                   className="bsf"
                   style={{ marginTop: 18, padding: '9px 22px', fontSize: 14 }}
-                  onClick={() => setSent(false)}
+                  onClick={() => {
+                    setSent(false);
+                    setErr('');
+                  }}
                 >
                   {lang === 'en' ? 'Send Another' : 'और भेजें'}
                 </button>
               </div>
             ) : (
-              <form onSubmit={e => { e.preventDefault(); setSent(true); }} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <h3 style={{ fontWeight: 800, fontSize: 19, marginBottom: 4 }}>
                   {lang === 'en' ? 'Send a Message' : 'संदेश भेजें'}
                 </h3>
@@ -107,8 +127,9 @@ export function PageContact({ lang }) {
                   rows={5} value={form.msg} onChange={updateField('msg')}
                   placeholder={lang === 'en' ? 'Message *' : 'संदेश *'} required
                 />
-                <button type="submit" className="bsf" style={{ padding: 13, fontSize: 15 }}>
-                  {lang === 'en' ? 'Send Message' : 'भेजें'}
+                {err && <p style={{ color: '#DC2626', fontSize: 13 }}>{err}</p>}
+                <button type="submit" className="bsf" style={{ padding: 13, fontSize: 15 }} disabled={loading}>
+                  {loading ? (lang === 'en' ? 'Sending...' : 'भेजा जा रहा है...') : (lang === 'en' ? 'Send Message' : 'भेजें')}
                 </button>
               </form>
             )}

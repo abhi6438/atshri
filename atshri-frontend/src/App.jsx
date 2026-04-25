@@ -19,6 +19,7 @@ import { PageContact } from './pages/Contact';
 import { PageAccessDenied } from './pages/AccessDenied';
 import { AdminLogin } from './admin/AdminLogin';
 import { AdminDash } from './admin/AdminDash';
+import { fetchContent } from './api';
 import {
   isRouteEnabled,
   parsePathPage,
@@ -29,6 +30,7 @@ import {
 
 const clone = x => structuredClone(x);
 const THEME_KEY = 'atshri.theme';
+const ADMIN_TOKEN_KEY = 'atshri.adminToken';
 
 export default function App() {
   const location = useLocation();
@@ -55,7 +57,10 @@ export default function App() {
 
   const [lang, setLang] = useState('en');
   const [mob, setMob] = useState(false);
-  const [admin, setAdmin] = useState(false);
+  const [adminToken, setAdminToken] = useState(() =>
+    typeof window !== 'undefined' ? localStorage.getItem(ADMIN_TOKEN_KEY) || '' : '',
+  );
+  const [admin, setAdmin] = useState(() => !!adminToken);
 
   const [menu, setMenu] = useState(() => clone(SITE_DEFAULT.menu));
   const [donateCta, setDonateCta] = useState(() => clone(SITE_DEFAULT.donateCta));
@@ -64,6 +69,41 @@ export default function App() {
   const [team, setTeam] = useState(TEAM);
   const [stats, setStats] = useState(STATS);
   const [values, setValues] = useState(VALUES);
+
+  useEffect(() => {
+    if (adminToken) localStorage.setItem(ADMIN_TOKEN_KEY, adminToken);
+    else localStorage.removeItem(ADMIN_TOKEN_KEY);
+  }, [adminToken]);
+
+  useEffect(() => {
+    if (import.meta.env.VITE_USE_API_CONTENT !== 'true') return;
+    let active = true;
+    fetchContent()
+      .then(data => {
+        if (!active) return;
+        // Always apply a successful response (including empty arrays) so the UI
+        // reflects the database. Previously we skipped empty lists, which left
+        // bundled static data in place when the DB was not seeded yet.
+        setMenu(Array.isArray(data.menu) ? data.menu : []);
+        setCats(Array.isArray(data.categories) ? data.categories : []);
+        setActs(Array.isArray(data.activities) ? data.activities : []);
+        setTeam(Array.isArray(data.team) ? data.team : []);
+        setStats(Array.isArray(data.stats) ? data.stats : []);
+        setValues(Array.isArray(data.values) ? data.values : []);
+      })
+      .catch(err => {
+        if (import.meta.env.DEV) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            '[atshri] GET /content failed; keeping bundled src/data. Check VITE_API_URL, CORS, and that the API is running.',
+            err,
+          );
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const visMenu = menu.filter(m => m.enabled !== false && m.showInNav !== false);
   const visActs = acts.filter(a => a.visible);
@@ -142,9 +182,17 @@ export default function App() {
         {page === 'involved' && pageEnabled('involved') && <PageInvolved {...shared} />}
         {page === 'contact' && pageEnabled('contact') && <PageContact {...shared} />}
         {page === 'access-denied' && <PageAccessDenied lang={lang} go={go} />}
-        {page === 'admin' && !admin && <AdminLogin setAdmin={setAdmin} />}
+        {page === 'admin' && !admin && (
+          <AdminLogin
+            onLogin={token => {
+              setAdminToken(token);
+              setAdmin(true);
+            }}
+          />
+        )}
         {page === 'admin' && admin && (
           <AdminDash
+            adminToken={adminToken}
             lang={lang}
             menu={menu}
             setMenu={setMenu}
@@ -160,7 +208,14 @@ export default function App() {
             setStats={setStats}
             values={values}
             setValues={setValues}
-            setAdmin={setAdmin}
+            setAdmin={next => {
+              if (next === false) {
+                setAdmin(false);
+                setAdminToken('');
+                return;
+              }
+              setAdmin(!!next);
+            }}
           />
         )}
       </main>

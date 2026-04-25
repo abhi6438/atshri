@@ -1,18 +1,24 @@
 import { useState } from 'react';
 import { Logo } from '../components/common/Logo';
+import { loginAdmin } from '../api';
 
-const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || 'atshri@2024';
-
-export function AdminLogin({ setAdmin }) {
+export function AdminLogin({ onLogin }) {
+  const [username, setUsername] = useState('atshri_admin');
   const [pw, setPw] = useState('');
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    if (pw === ADMIN_PASS) {
-      setAdmin(true);
-    } else {
-      setErr(true);
+    setErr('');
+    setLoading(true);
+    try {
+      const data = await loginAdmin(username.trim(), pw);
+      onLogin(data.access_token);
+    } catch {
+      setErr('Invalid username or password');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,14 +38,25 @@ export function AdminLogin({ setAdmin }) {
         </div>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
           <input
+            type="text"
+            value={username}
+            onChange={e => { setUsername(e.target.value); setErr(''); }}
+            placeholder="Username"
+            autoComplete="username"
+            required
+          />
+          <input
             type="password"
             value={pw}
-            onChange={e => { setPw(e.target.value); setErr(false); }}
+            onChange={e => { setPw(e.target.value); setErr(''); }}
             placeholder="Password"
             autoComplete="current-password"
+            required
           />
-          {err && <p style={{ color: '#EF4444', fontSize: 13 }}>❌ Incorrect password</p>}
-          <button type="submit" className="bsf" style={{ padding: 13, fontSize: 16 }}>Login</button>
+          {err && <p style={{ color: '#EF4444', fontSize: 13 }}>❌ {err}</p>}
+          <button type="submit" className="bsf" style={{ padding: 13, fontSize: 16 }} disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
         </form>
       </div>
     </div>
