@@ -68,8 +68,34 @@ export function Footer({ lang, go, cats, menu }) {
             </h4>
             <p style={{ fontSize: 13, lineHeight: 2, color: 'rgba(255,255,255,.55)' }}>
               📍 Rewa, MP<br />
-              📧 info@atshri.org<br />
+              📧{' '}
+              <a href="mailto:info@atshri.org" style={{ color: 'inherit', textDecoration: 'underline' }}>info@atshri.org</a>
+              <br />
+              📧{' '}
+              <a href="mailto:atshri.trust@gmail.com" style={{ color: 'inherit', textDecoration: 'underline' }}>atshri.trust@gmail.com</a>
+              <br />
               🙏 Maya Manoj Shrivastava
+            </p>
+            <p style={{ fontSize: 13, lineHeight: 2, color: 'rgba(255,255,255,.55)', marginTop: 12 }}>
+              <span style={{ color: '#F4831F', fontWeight: 700, display: 'block', marginBottom: 6 }}>
+                {lang === 'en' ? 'Follow' : 'फॉलो'}
+              </span>
+              <a
+                href="https://www.youtube.com/@atshri"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'inherit', textDecoration: 'underline', marginRight: 14 }}
+              >
+                YouTube
+              </a>
+              <a
+                href="https://x.com/AtshriTrust"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'inherit', textDecoration: 'underline' }}
+              >
+                X / Twitter
+              </a>
             </p>
             <div
               onClick={() => go('admin')}

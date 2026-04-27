@@ -1,9 +1,30 @@
 import { useState } from 'react';
 
+/** Both inboxes receive the same prefilled message from the form (mailto). */
+const CONTACT_EMAILS = ['info@atshri.org', 'atshri.trust@gmail.com'];
+const MAILTO_TO = CONTACT_EMAILS.join(',');
+
 const CONTACT_INFO = [
-  { icon: '📍', en: 'Location', hi: 'स्थान',  value: 'Rewa, Madhya Pradesh, India' },
-  { icon: '📧', en: 'Email',    hi: 'ईमेल',   value: 'info@atshri.org' },
-  { icon: '📱', en: 'Phone',    hi: 'फोन',    value: '+91 XXXXX XXXXX' },
+  { icon: '📍', en: 'Location', hi: 'स्थान', value: 'Rewa, Madhya Pradesh, India' },
+  { icon: '📧', en: 'Email', hi: 'ईमेल', emails: CONTACT_EMAILS },
+  { icon: '📱', en: 'Phone', hi: 'फोन', value: '+91 XXXXX XXXXX' },
+];
+
+const SOCIAL_LINKS = [
+  {
+    icon: '▶️',
+    en: 'YouTube',
+    hi: 'यूट्यूब',
+    href: 'https://www.youtube.com/@atshri',
+    label: 'youtube.com/@atshri',
+  },
+  {
+    icon: 'X',
+    en: 'X (Twitter)',
+    hi: 'एक्स (ट्विटर)',
+    href: 'https://x.com/AtshriTrust',
+    label: '@AtshriTrust',
+  },
 ];
 
 export function PageContact({ lang }) {
@@ -11,6 +32,20 @@ export function PageContact({ lang }) {
   const [sent, setSent] = useState(false);
 
   const updateField = field => e => setForm(prev => ({ ...prev, [field]: e.target.value }));
+
+  const openMailto = e => {
+    e.preventDefault();
+    const subject =
+      lang === 'en'
+        ? `Atshri — message from ${form.name}`
+        : `अतश्री — ${form.name} का संदेश`;
+    const body =
+      lang === 'en'
+        ? `Name: ${form.name}\nReply-to email: ${form.email}\n\nMessage:\n${form.msg}\n`
+        : `नाम: ${form.name}\nईमेल (जवाब के लिए): ${form.email}\n\nसंदेश:\n${form.msg}\n`;
+    window.location.href = `mailto:${MAILTO_TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSent(true);
+  };
 
   return (
     <div style={{ paddingTop: 64 }}>
@@ -31,7 +66,7 @@ export function PageContact({ lang }) {
             <h2 style={{ fontWeight: 800, fontSize: 21, marginBottom: 24 }}>
               {lang === 'en' ? 'Contact Info' : 'संपर्क जानकारी'}
             </h2>
-            {CONTACT_INFO.map(({ icon, en, hi, value }) => (
+            {CONTACT_INFO.map(({ icon, en, hi, value, emails }) => (
               <div key={en} style={{ display: 'flex', gap: 14, marginBottom: 20 }}>
                 <div style={{
                   width: 44, height: 44, background: 'var(--sfl)', borderRadius: 11,
@@ -44,7 +79,21 @@ export function PageContact({ lang }) {
                   <div style={{ fontWeight: 700, fontSize: 11, color: 'var(--sf)', letterSpacing: 1, marginBottom: 2 }}>
                     {(lang === 'en' ? en : hi).toUpperCase()}
                   </div>
-                  <div style={{ color: 'var(--mid)', fontSize: 15 }}>{value}</div>
+                  {emails ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {emails.map(addr => (
+                        <a
+                          key={addr}
+                          href={`mailto:${addr}`}
+                          style={{ color: 'var(--sf)', fontSize: 15, fontWeight: 600, textDecoration: 'none' }}
+                        >
+                          {addr}
+                        </a>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ color: 'var(--mid)', fontSize: 15 }}>{value}</div>
+                  )}
                 </div>
               </div>
             ))}
@@ -63,6 +112,43 @@ export function PageContact({ lang }) {
                 </div>
               </div>
             </div>
+            <div style={{ display: 'flex', gap: 14, marginBottom: 20 }}>
+              <div style={{
+                width: 44, height: 44, background: 'var(--sfl)', borderRadius: 11,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 17, flexShrink: 0,
+              }}>🔗</div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 11, color: 'var(--sf)', letterSpacing: 1, marginBottom: 6 }}>
+                  {(lang === 'en' ? 'Follow us' : 'हमें फॉलो करें').toUpperCase()}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {SOCIAL_LINKS.map(({ icon, en, hi, href, label }) => (
+                    <a
+                      key={href}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: 'var(--sf)',
+                        fontSize: 15,
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 8,
+                      }}
+                    >
+                      <span aria-hidden>{icon}</span>
+                      <span>
+                        {lang === 'en' ? en : hi}
+                        <span style={{ color: 'var(--mid)', fontWeight: 500, marginLeft: 6 }}>({label})</span>
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
             <div style={{ padding: 18, background: 'var(--sfl)', borderRadius: 13, border: '1.5px solid var(--bd)', marginTop: 20 }}>
               <p style={{ fontWeight: 700, color: 'var(--sfd)', fontSize: 13, marginBottom: 4 }}>
                 🙏 {lang === 'en' ? 'Trustee' : 'ट्रस्टी'}
@@ -77,24 +163,34 @@ export function PageContact({ lang }) {
               <div style={{ textAlign: 'center', padding: '42px 0' }}>
                 <div style={{ fontSize: 48, marginBottom: 11 }}>✉️</div>
                 <h3 style={{ color: 'var(--sf)', fontWeight: 700, fontSize: 21, marginBottom: 7 }}>
-                  {lang === 'en' ? 'Message Sent!' : 'संदेश भेज दिया!'}
+                  {lang === 'en' ? 'Check your email app' : 'अपना ईमेल ऐप देखें'}
                 </h3>
-                <p style={{ color: 'var(--mid)' }}>
-                  {lang === 'en' ? "We'll get back to you soon." : 'हम जल्द संपर्क करेंगे।'}
+                <p style={{ color: 'var(--mid)', maxWidth: 320, margin: '0 auto', lineHeight: 1.55 }}>
+                  {lang === 'en'
+                    ? 'Your device should open your mail app with a draft to us. Press Send there to deliver the message.'
+                    : 'आपके फ़ोन/कंप्यूटर पर ईमेल ऐप खुलकर हमारे लिए एक ड्राफ़ तैयार हो जाना चाहिए। संदेश भेजने के लिए वहाँ Send दबाएँ।'}
                 </p>
                 <button
                   className="bsf"
                   style={{ marginTop: 18, padding: '9px 22px', fontSize: 14 }}
-                  onClick={() => setSent(false)}
+                  onClick={() => {
+                    setSent(false);
+                    setForm({ name: '', email: '', msg: '' });
+                  }}
                 >
                   {lang === 'en' ? 'Send Another' : 'और भेजें'}
                 </button>
               </div>
             ) : (
-              <form onSubmit={e => { e.preventDefault(); setSent(true); }} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <form onSubmit={openMailto} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <h3 style={{ fontWeight: 800, fontSize: 19, marginBottom: 4 }}>
                   {lang === 'en' ? 'Send a Message' : 'संदेश भेजें'}
                 </h3>
+                <p style={{ fontSize: 13, color: 'var(--mid)', margin: '-6px 0 0', lineHeight: 1.45 }}>
+                  {lang === 'en'
+                    ? 'Uses your own email app — no server stores this. Both addresses are included as recipients.'
+                    : 'यह आपके ईमेल ऐप से खुलेगा — सर्वर पर कुछ सेव नहीं होता। दोनों पते प्राप्तकर्ता में होंगे।'}
+                </p>
                 <input
                   value={form.name} onChange={updateField('name')}
                   placeholder={lang === 'en' ? 'Name *' : 'नाम *'} required
