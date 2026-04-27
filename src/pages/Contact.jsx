@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 const CONTACT_INFO = [
   { icon: '📍', en: 'Location', hi: 'स्थान',  value: 'Rewa, Madhya Pradesh, India' },
-  { icon: '📧', en: 'Email',    hi: 'ईमेल',   value: 'atshri.seva@gmail.com' },
+  { icon: '📧', en: 'Email',    hi: 'ईमेल',   value: 'info@atshri.org' },
   { icon: '📱', en: 'Phone',    hi: 'फोन',    value: '+91 XXXXX XXXXX' },
 ];
 

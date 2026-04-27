@@ -68,7 +68,7 @@ export function Footer({ lang, go, cats, menu }) {
             </h4>
             <p style={{ fontSize: 13, lineHeight: 2, color: 'rgba(255,255,255,.55)' }}>
               📍 Rewa, MP<br />
-              📧 atshri.seva@gmail.com<br />
+              📧 info@atshri.org<br />
               🙏 Maya Manoj Shrivastava
             </p>
             <div
