@@ -9,6 +9,7 @@ import {
   VALUES,
 } from './data';
 import { Nav } from './components/layout/Nav';
+import { SocialFloat } from './components/common/SocialFloat';
 import { Footer } from './components/layout/Footer';
 import { PageHome } from './pages/Home';
 import { PageAbout } from './pages/About';
@@ -165,6 +166,7 @@ export default function App() {
         )}
       </main>
       <Footer lang={lang} go={go} cats={visCats} menu={menu} />
+      <SocialFloat social={SITE_DEFAULT.social} />
     </div>
   );
 }

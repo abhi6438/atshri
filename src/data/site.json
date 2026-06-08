@@ -7,6 +7,17 @@
     { "id": "involved", "icon": "🤝", "label": { "en": "Get Involved", "hi": "जुड़ें" }, "enabled": false, "showInNav": false },
     { "id": "contact", "icon": "📞", "label": { "en": "Contact", "hi": "संपर्क" }, "enabled": true, "showInNav": true }
   ],
+  "social": {
+    "youtube": "https://www.youtube.com/@AtShri",
+    "youtubeHandle": "@AtShri",
+    "instagram": "https://www.instagram.com/atshritrust",
+    "instagramHandle": "@atshritrust",
+    "instagramPosts": [
+      "https://www.instagram.com/reel/DXyKU2LMvTt/",
+      "https://www.instagram.com/p/DYvudHpCDzW/",
+      "https://www.instagram.com/reel/DY9Y_mcyypG/"
+    ]
+  },
   "donateCta": {
     "show": false,
     "targetId": "involved",

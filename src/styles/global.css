@@ -205,6 +205,96 @@ select:focus {
   }
 }
 
+/* ── CSS var aliases (used in dynamic components) ────────────────── */
+:root {
+  --brd:  #F0D5B8;
+  --card: #ffffff;
+  --accent: #F4831F;
+}
+[data-theme='dark'] {
+  --brd:  #4a3d32;
+  --card: #1c1814;
+  --accent: #f5a623;
+}
+
+/* ── Floating social buttons ──────────────────────────────────────── */
+.sfloat {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sfloat-btn {
+  display: flex;
+  align-items: center;
+  height: 46px;
+  border-radius: 10px 0 0 10px;
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.22);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.sfloat-btn:hover {
+  box-shadow: 0 6px 22px rgba(0,0,0,0.32);
+  transform: translateX(-2px);
+}
+
+.sfloat-icon {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sfloat-label {
+  white-space: nowrap;
+  max-width: 0;
+  overflow: hidden;
+  transition: max-width 0.28s ease, padding 0.28s ease;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: 'Baloo 2', sans-serif;
+}
+.sfloat-btn:hover .sfloat-label {
+  max-width: 130px;
+  padding-right: 16px;
+}
+
+/* Mobile: round FAB buttons at bottom-right */
+@media (max-width: 640px) {
+  .sfloat {
+    top: auto;
+    bottom: 90px;
+    right: 12px;
+    transform: none;
+    gap: 10px;
+  }
+  .sfloat-btn {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.32);
+  }
+  .sfloat-icon {
+    width: 50px;
+    height: 50px;
+  }
+  .sfloat-label {
+    display: none;
+  }
+  .sfloat-btn:hover .sfloat-label {
+    display: none;
+  }
+}
+
 /* ── Responsive ───────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .dsk { display: none !important; }
