@@ -18,7 +18,7 @@ export function Logo({ size = 42 }) {
 
 /** @param {{ light?: boolean, lang?: 'en' | 'hi' }} props */
 export function LogoName({ light = false, lang = 'en' }) {
-  const at = lang === 'hi' ? 'अत' : 'at';
+  const at = lang === 'hi' ? 'अथ' : 'at';
   const shri = lang === 'hi' ? 'श्री' : 'Shri';
   return (
     <span style={{ fontSize: 20, lineHeight: 1, fontFamily: "'Baloo 2',sans-serif" }}>
@@ -32,7 +32,7 @@ export function LogoName({ light = false, lang = 'en' }) {
 export function LogoFull({ size = 80, light = false, lang = 'en' }) {
   const tc = light ? 'rgba(255,255,255,.5)' : 'var(--logo-tag)';
   const hc = light ? 'rgba(255,255,255,.35)' : 'var(--logo-tag-hi)';
-  const at = lang === 'hi' ? 'अत' : 'at';
+  const at = lang === 'hi' ? 'अथ' : 'at';
   const shri = lang === 'hi' ? 'श्री' : 'Shri';
   const nameSize = Math.round(size * 0.44);
   const tagSize = Math.round(size * 0.12);

@@ -38,7 +38,7 @@ export function PageContact({ lang }) {
     const subject =
       lang === 'en'
         ? `Atshri — message from ${form.name}`
-        : `अतश्री — ${form.name} का संदेश`;
+        : `अथश्री — ${form.name} का संदेश`;
     const body =
       lang === 'en'
         ? `Name: ${form.name}\nReply-to email: ${form.email}\n\nMessage:\n${form.msg}\n`

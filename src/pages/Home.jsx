@@ -63,7 +63,7 @@ export function PageHome({ lang, go, acts, cats, stats, pageEnabled, donateCta }
           <p className="u3" style={{ fontSize: 'clamp(15px,2vw,18px)', color: 'var(--mid)', maxWidth: 560, margin: '0 auto 34px', lineHeight: 1.8 }}>
             {lang === 'en'
               ? 'Atshri is a community trust dedicated to selfless service — water in summer, warmth in winter, hope in every season.'
-              : 'अतश्री एक सामुदायिक ट्रस्ट है — गर्मी में पानी, सर्दी में कम्बल, हर मौसम में उम्मीद।'}
+              : 'अथश्री एक सामुदायिक ट्रस्ट है — गर्मी में पानी, सर्दी में कम्बल, हर मौसम में उम्मीद।'}
           </p>
           <div className="u3" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
             {pageEnabled('gallery') && (

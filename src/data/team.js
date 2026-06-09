@@ -7,7 +7,7 @@ export const TEAM = [
     badge: '🌟',
     desc: {
       en: "Founder and driving force behind Atshri's mission of selfless community service.",
-      hi: 'अतश्री के निःस्वार्थ सेवा मिशन की संस्थापक और प्रेरणाशक्ति।',
+      hi: 'अथश्री के निःस्वार्थ सेवा मिशन की संस्थापक और प्रेरणाशक्ति।',
     },
     visible: true,
   },

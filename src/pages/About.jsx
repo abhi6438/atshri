@@ -9,11 +9,11 @@ export function PageAbout({ lang, team, values }) {
       <section style={{ background: 'var(--hero-grad)', padding: '76px 20px' }}>
         <div className="wrap" style={{ textAlign: 'center' }}>
           <div style={{ marginBottom: 22 }}><LogoFull size={78} lang={lang} /></div>
-          <h1 className="sxt">{lang === 'en' ? 'About Atshri' : 'अतश्री के बारे में'}</h1>
+          <h1 className="sxt">{lang === 'en' ? 'About Atshri' : 'अथश्री के बारे में'}</h1>
           <p style={{ color: 'var(--mid)', maxWidth: 700, margin: '0 auto', fontSize: 17, lineHeight: 1.85 }}>
             {lang === 'en'
               ? 'Atshri was founded on one simple belief — every act of service, however small, creates ripples of lasting change. From distributing cool water under the scorching summer sun, to wrapping blankets around shivering shoulders in cold winter nights, to sweeping the floors of our beloved mandirs — we show up wherever we are needed, with willing hands and open hearts.'
-              : 'अतश्री की नींव एक सरल विश्वास पर रखी गई — सेवा का हर छोटा कार्य स्थायी परिवर्तन की लहर बनाता है। गर्मी में पानी, सर्दी में कम्बल, मंदिरों की सफाई — जहाँ जरूरत होती है, हम वहाँ पहुँचते हैं।'}
+              : 'अथश्री की नींव एक सरल विश्वास पर रखी गई — सेवा का हर छोटा कार्य स्थायी परिवर्तन की लहर बनाता है। गर्मी में पानी, सर्दी में कम्बल, मंदिरों की सफाई — जहाँ जरूरत होती है, हम वहाँ पहुँचते हैं।'}
           </p>
         </div>
       </section>
