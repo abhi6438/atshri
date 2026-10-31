@@ -98,3 +98,47 @@ export const FOCUS_AREAS = [
     },
   },
 ];
+
+/** In-memory-of section + family lineage (oldest generation first). */
+export const MEMORIAL = {
+  name: { en: 'Late Shri Manoj Kumar Shrivastava', hi: 'स्व. श्री मनोज कुमार श्रीवास्तव' },
+  title: { en: 'In loving memory', hi: 'पुण्य स्मृति में' },
+  text: {
+    en: 'Atshri Trust was founded in loving memory of our revered father, Late Shri Manoj Kumar Shrivastava. His life was one of simplicity, duty and kindness towards others — and every act of seva by the trust is a humble effort to walk the path he showed us.',
+    hi: 'अथश्री ट्रस्ट की स्थापना हमारे पूज्य पिताजी स्वर्गीय श्री मनोज कुमार श्रीवास्तव की पुण्य स्मृति में की गई है। उनका जीवन सरलता, कर्तव्य और दूसरों की सहायता के भाव से भरा रहा। आज ट्रस्ट का हर सेवा-कार्य उन्हीं के दिखाए मार्ग पर चलने का एक विनम्र प्रयास है।',
+  },
+  photo: { src: '/images/family/papa-900.webp', small: '/images/family/papa-500.webp' },
+};
+
+export const LINEAGE = [
+  {
+    id: 'pardada',
+    relation: { en: 'Great-grandparents', hi: 'परदादा एवं परदादी' },
+    names: { en: 'Late Shri Rambihari Shrivastava & Late Smt. Pardadi ji', hi: 'स्व. श्री रामबिहारी श्रीवास्तव एवं स्व. श्रीमती परदादी जी' },
+    text: {
+      en: 'The roots of our family’s faith and traditions. It is with the blessings of these elders that this journey of seva has become possible.',
+      hi: 'परिवार की परंपरा और आस्था की जड़ें। उन्हीं पूर्वजों के आशीर्वाद से यह सेवा-यात्रा संभव हो रही है।',
+    },
+    photo: { src: '/images/family/pardada-pardadi-1200.webp', small: '/images/family/pardada-pardadi-640.webp' },
+  },
+  {
+    id: 'dadaji',
+    relation: { en: 'Grandparents', hi: 'दादाजी एवं दादीजी' },
+    names: { en: 'Late Shri Mahadev Prasad Shrivastava & Late Shrimati Kamla Shrivastava', hi: 'स्व. श्री महादेव प्रसाद श्रीवास्तव एवं स्व. श्रीमती कमला श्रीवास्तव' },
+    text: {
+      en: 'Their values and blessings gave our family its foundation of dharma, service and togetherness. Their teachings still live in every decision we make.',
+      hi: 'जिनके संस्कारों और आशीर्वाद ने परिवार को धर्म, सेवा और एकता की नींव दी। उनकी सीख आज भी हमारे हर निर्णय में जीवित है।',
+    },
+    photo: { src: '/images/family/dadaji-dadiji-1200.webp', small: '/images/family/dadaji-dadiji-640.webp' },
+  },
+  {
+    id: 'papa',
+    relation: { en: 'Our father — the inspiration', hi: 'पिताजी — प्रेरणा स्रोत' },
+    names: { en: 'Late Shri Manoj Kumar Shrivastava', hi: 'स्व. श्री मनोज कुमार श्रीवास्तव' },
+    text: {
+      en: 'In whose loving memory Atshri Trust was founded. His simplicity, sense of duty and care for others guide all our work.',
+      hi: 'जिनकी पुण्य स्मृति में अथश्री ट्रस्ट की स्थापना हुई। उनकी सरलता, कर्तव्यनिष्ठा और दूसरों के प्रति करुणा ही हमारे हर कार्य की प्रेरणा है।',
+    },
+    portrait: true,
+  },
+];

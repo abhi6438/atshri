@@ -29,6 +29,9 @@ export function Footer({ lang, go, cats, menu }) {
                 : 'रीवा, मध्य प्रदेश का एक पंजीकृत सार्वजनिक धर्मार्थ न्यास — राहत, सांस्कृतिक सेवा, शिक्षा, स्वास्थ्य एवं प्रकृति संरक्षण के माध्यम से सेवा।'}
             </p>
             <p className="mantra">सेवा परमो धर्मः</p>
+            <p style={{ marginTop: 10, fontSize: 'var(--fs-xs)', color: 'var(--gold-300)' }}>
+              {lang === 'en' ? 'Dedicated to the loving memory of Late Shri Manoj Kumar Shrivastava' : 'स्व. श्री मनोज कुमार श्रीवास्तव की पुण्य स्मृति में समर्पित'}
+            </p>
             <div className="footer-social">
               {s.youtube && <a href={s.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Icon name="youtube" /></a>}
               {s.instagram && <a href={s.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Icon name="instagram" /></a>}

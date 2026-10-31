@@ -1,7 +1,7 @@
 import { ABOUT } from '../data/content';
 import { PageHeader } from '../components/common/PageHeader';
 import { Icon } from '../components/common/Icon';
-import { Photo, VisionMission, Trustees, Transparency, CtaBand } from '../components/sections';
+import { Photo, VisionMission, Trustees, Transparency, CtaBand, Lineage } from '../components/sections';
 
 export function PageAbout({ lang, go, team, values, pageEnabled, donateCta }) {
   const en = lang === 'en';
@@ -22,6 +22,7 @@ export function PageAbout({ lang, go, team, values, pageEnabled, donateCta }) {
         <nav className="chip-row chip-row--scroll" aria-label={en ? 'On this page' : 'इस पृष्ठ पर'}>
           {[
             ['story', en ? 'Our story' : 'हमारी कहानी'],
+            ['heritage', en ? 'Our heritage' : 'हमारी विरासत'],
             ['vision', en ? 'Vision & Mission' : 'दृष्टि एवं मिशन'],
             ['trustees', en ? 'Trustees' : 'ट्रस्टी'],
             ['documents', en ? 'Documents' : 'दस्तावेज़'],
@@ -56,6 +57,7 @@ export function PageAbout({ lang, go, team, values, pageEnabled, donateCta }) {
         </div>
       </section>
 
+      <Lineage lang={lang} />
       <VisionMission lang={lang} values={values} />
       <Trustees lang={lang} team={team} />
       <Transparency lang={lang} go={go} pageEnabled={pageEnabled} />

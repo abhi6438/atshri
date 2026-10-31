@@ -17,18 +17,22 @@ function igShortcode(url) {
 function InstaCard({ url, lang }) {
   const info = igShortcode(url);
   if (!info) return null;
+  const clean = `https://www.instagram.com/${info.type}/${info.code}/`;
   const isReel = info.type === 'reel';
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className="card card-hover insta-card">
-      <div className="insta-card__cover">
-        <Icon name="instagram" />
-        <span className="badge badge--brand">{isReel ? (lang === 'en' ? 'Reel' : 'रील') : (lang === 'en' ? 'Post' : 'पोस्ट')}</span>
-      </div>
-      <div className="insta-card__foot">
-        <span>Instagram</span>
-        <span className="link-arrow" style={{ border: 0 }}>{lang === 'en' ? 'View' : 'देखें'} <Icon name="external" /></span>
-      </div>
-    </a>
+    <article className="insta-embed">
+      <iframe
+        src={`${clean}embed/`}
+        title={`${isReel ? 'Instagram reel' : 'Instagram post'} — Atshri Trust`}
+        loading="lazy"
+        allow="encrypted-media; picture-in-picture"
+        allowFullScreen
+        scrolling="no"
+      />
+      <a className="insta-embed__link" href={clean} target="_blank" rel="noopener noreferrer">
+        <Icon name="instagram" /> {lang === 'en' ? (isReel ? 'Open reel on Instagram' : 'Open post on Instagram') : 'इंस्टाग्राम पर खोलें'} <Icon name="external" />
+      </a>
+    </article>
   );
 }
 
@@ -65,22 +69,22 @@ export function PageGallery({ lang, go, acts, cats }) {
             <div className="social-cards" style={{ marginBottom: 'clamp(32px, 4vw, 48px)' }}>
               {s.youtube && (
                 <a className="card card-hover social-card" href={s.youtube} target="_blank" rel="noopener noreferrer">
-                  <span className="social-card__icon"><Icon name="youtube" /></span>
+                  <span className="social-card__icon social-card__icon--yt"><Icon name="youtube" /></span>
                   <span>
                     <strong>{en ? 'Watch on YouTube' : 'यूट्यूब पर देखें'}</strong>
                     <span>{s.youtubeHandle} · {totalVideos} {en ? 'videos published' : 'वीडियो प्रकाशित'}</span>
                   </span>
-                  <span className="link-arrow">{en ? 'Subscribe' : 'सब्सक्राइब'} <Icon name="external" /></span>
+                  <span className="btn btn-sm btn-primary social-card__cta">{en ? 'Subscribe' : 'सब्सक्राइब'} <Icon name="external" /></span>
                 </a>
               )}
               {s.instagram && (
                 <a className="card card-hover social-card" href={s.instagram} target="_blank" rel="noopener noreferrer">
-                  <span className="social-card__icon"><Icon name="instagram" /></span>
+                  <span className="social-card__icon social-card__icon--ig"><Icon name="instagram" /></span>
                   <span>
                     <strong>{en ? 'Follow on Instagram' : 'इंस्टाग्राम पर फॉलो करें'}</strong>
                     <span>{s.instagramHandle} · {instaPosts.length} {en ? 'posts & reels' : 'पोस्ट और रील'}</span>
                   </span>
-                  <span className="link-arrow">{en ? 'Follow' : 'फॉलो'} <Icon name="external" /></span>
+                  <span className="btn btn-sm btn-primary social-card__cta">{en ? 'Follow' : 'फॉलो'} <Icon name="external" /></span>
                 </a>
               )}
             </div>
@@ -130,7 +134,7 @@ export function PageGallery({ lang, go, acts, cats }) {
               {instaPosts.length > 0 && (
                 <div style={{ marginBottom: 'clamp(40px, 5vw, 64px)' }}>
                   <Divider count={instaPosts.length}>{en ? 'On Instagram' : 'इंस्टाग्राम पर'}</Divider>
-                  <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 200px), 1fr))' }}>
+                  <div className="insta-grid">
                     {instaPosts.map(url => <InstaCard key={url} url={url} lang={lang} />)}
                   </div>
                 </div>

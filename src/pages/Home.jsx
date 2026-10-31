@@ -4,7 +4,7 @@ import { ABOUT, FOCUS_AREAS } from '../data/content';
 import { ActCard } from '../components/ActCard';
 import { VideoModal } from '../components/common/VideoModal';
 import { Icon } from '../components/common/Icon';
-import { Photo, VisionMission, Trustees, Transparency, CtaBand, EventHighlight } from '../components/sections';
+import { Photo, VisionMission, Trustees, Transparency, CtaBand, EventHighlight, Memorial } from '../components/sections';
 import { buildPlaylist, fmtDate, videosOf, ytThumb } from '../utils/media';
 
 const FOCUS_LAYOUT = ['focus--a', 'focus--b', 'focus--c', 'focus--d', 'focus--e', 'focus--f'];
@@ -103,6 +103,9 @@ export function PageHome({ lang, go, acts, cats, stats, team, values, pageEnable
 
       {/* ── BIG UPCOMING EVENT ─────────────────────────────── */}
       <EventHighlight lang={lang} go={go} pageEnabled={pageEnabled} events={highlight} />
+
+      {/* ── IN LOVING MEMORY ───────────────────────────────── */}
+      <Memorial lang={lang} go={go} pageEnabled={pageEnabled} />
 
       {/* ── ABOUT INTRO ────────────────────────────────────── */}
       <section className="section" aria-labelledby="about-title">
@@ -299,22 +302,22 @@ export function PageHome({ lang, go, acts, cats, stats, team, values, pageEnable
             <div className="social-cards">
               {SITE.social?.youtube && (
                 <a className="card card-hover social-card reveal" href={SITE.social.youtube} target="_blank" rel="noopener noreferrer">
-                  <span className="social-card__icon"><Icon name="youtube" /></span>
+                  <span className="social-card__icon social-card__icon--yt"><Icon name="youtube" /></span>
                   <span>
                     <strong>YouTube</strong>
                     <span>{SITE.social.youtubeHandle} · {en ? 'Videos from the field' : 'सेवा के वीडियो'}</span>
                   </span>
-                  <span className="link-arrow">{en ? 'Subscribe' : 'सब्सक्राइब'} <Icon name="external" /></span>
+                  <span className="btn btn-sm btn-primary social-card__cta">{en ? 'Subscribe' : 'सब्सक्राइब'} <Icon name="external" /></span>
                 </a>
               )}
               {SITE.social?.instagram && (
                 <a className="card card-hover social-card reveal reveal-d1" href={SITE.social.instagram} target="_blank" rel="noopener noreferrer">
-                  <span className="social-card__icon"><Icon name="instagram" /></span>
+                  <span className="social-card__icon social-card__icon--ig"><Icon name="instagram" /></span>
                   <span>
                     <strong>Instagram</strong>
                     <span>{SITE.social.instagramHandle} · {en ? 'Reels & moments' : 'रील एवं झलकियाँ'}</span>
                   </span>
-                  <span className="link-arrow">{en ? 'Follow' : 'फॉलो'} <Icon name="external" /></span>
+                  <span className="btn btn-sm btn-primary social-card__cta">{en ? 'Follow' : 'फॉलो'} <Icon name="external" /></span>
                 </a>
               )}
             </div>

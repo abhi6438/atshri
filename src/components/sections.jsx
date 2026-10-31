@@ -1,5 +1,5 @@
 import SITE from '../data/site.json';
-import { VISION, MISSION } from '../data/content';
+import { VISION, MISSION, MEMORIAL, LINEAGE } from '../data/content';
 import { Icon } from './common/Icon';
 import { fmtDate } from '../utils/media';
 
@@ -232,13 +232,15 @@ export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
   const range = `${fmt(main.date)} – ${fmt(last.endDate || last.date)} ${new Date(`${main.date}T00:00:00`).getFullYear()}`;
   const start = new Date(`${main.date}T00:00:00`);
   const days = Math.ceil((start - new Date()) / 86400000);
-  const ig = sorted.find(e => e.instagram)?.instagram;
-  const igEmbed = ig ? `${ig.split('?')[0].replace(/\/?$/, '/')}embed/` : null;
+  const igRaw = sorted.find(e => e.instagram)?.instagram;
+  const reels = (Array.isArray(igRaw) ? igRaw : igRaw ? [igRaw] : [])
+    .map(u => u.split('?')[0].replace(/\/?$/, '/'));
+  const igEmbed = reels.length > 0;
 
   return (
     <section className="section section--tight" aria-labelledby="mahotsav-title">
       <div className="container">
-        <div className="mahotsav reveal">
+        <div className={`mahotsav${reels.length > 1 ? ' mahotsav--two' : ''} reveal`}>
           <div className="mahotsav__body">
             <p className="eyebrow">{en ? 'Upcoming Mahotsav · You are invited' : 'आगामी महोत्सव · सादर आमंत्रण'}</p>
             <h2 id="mahotsav-title">{main.heading[lang]}</h2>
@@ -272,17 +274,23 @@ export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
           <div className={`mahotsav__media${igEmbed ? ' mahotsav__media--reel' : ''}`}>
             {igEmbed ? (
               <>
-                <iframe
-                  src={igEmbed}
-                  title={en ? 'Bhagwat Katha invitation on Instagram' : 'इंस्टाग्राम पर भागवत कथा आमंत्रण'}
-                  loading="lazy"
-                  allow="encrypted-media; picture-in-picture"
-                  allowFullScreen
-                  scrolling="no"
-                />
-                <a className="link-arrow reel-link" href={ig} target="_blank" rel="noopener noreferrer">
-                  {en ? 'Open on Instagram' : 'इंस्टाग्राम पर देखें'} <Icon name="external" />
-                </a>
+                <div className={`mahotsav__reels mahotsav__reels--${reels.length}`}>
+                  {reels.map((u, i) => (
+                    <div key={u} className="mahotsav__reel">
+                      <iframe
+                        src={`${u}embed/`}
+                        title={`${en ? 'Bhagwat Katha invitation' : 'भागवत कथा आमंत्रण'} ${i + 1} — Instagram`}
+                        loading="lazy"
+                        allow="encrypted-media; picture-in-picture"
+                        allowFullScreen
+                        scrolling="no"
+                      />
+                      <a className="link-arrow reel-link" href={u} target="_blank" rel="noopener noreferrer">
+                        {en ? 'Open on Instagram' : 'इंस्टाग्राम पर देखें'} <Icon name="external" />
+                      </a>
+                    </div>
+                  ))}
+                </div>
               </>
             ) : (
               <Photo k="culture" lang={lang} sizes="(max-width: 860px) 100vw, 40vw" />
@@ -295,6 +303,95 @@ export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
             )}
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/** Portrait of our father inside a temple-arch frame with a soft diya glow. */
+function ArchPortrait({ lang, size = 'lg' }) {
+  return (
+    <div className={`arch-portrait arch-portrait--${size}`}>
+      <img
+        src={MEMORIAL.photo.src}
+        srcSet={`${MEMORIAL.photo.small} 500w, ${MEMORIAL.photo.src} 900w`}
+        sizes={size === 'lg' ? '(max-width: 860px) 80vw, 420px' : '220px'}
+        alt={MEMORIAL.name[lang]}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  );
+}
+
+/** Homepage band: "In loving memory". */
+export function Memorial({ lang, go, pageEnabled }) {
+  const en = lang === 'en';
+  return (
+    <section className="section memorial" aria-labelledby="memorial-title">
+      <div className="container memorial__grid">
+        <div className="reveal"><ArchPortrait lang={lang} /></div>
+        <div className="reveal reveal-d1">
+          <p className="eyebrow">{en ? 'Our Inspiration' : 'प्रेरणा स्रोत'}</p>
+          <h2 id="memorial-title" className="h-xl" style={{ marginBottom: 6 }}>{MEMORIAL.name[lang]}</h2>
+          <p className="memorial__sub">{MEMORIAL.title[lang]}</p>
+          <p className="lead">{MEMORIAL.text[lang]}</p>
+          <p className="memorial__blessing">
+            <span aria-hidden="true">🪔</span>
+            {en
+              ? 'With the blessings of our ancestors — Late Shri Mahadev Prasad Shrivastava, Late Shrimati Kamla Shrivastava and Late Shri Rambihari Shrivastava.'
+              : 'पूर्वजों के आशीर्वाद से — स्व. श्री महादेव प्रसाद श्रीवास्तव, स्व. श्रीमती कमला श्रीवास्तव एवं स्व. श्री रामबिहारी श्रीवास्तव।'}
+          </p>
+          {pageEnabled && pageEnabled('about') && (
+            <button type="button" className="link-arrow" onClick={() => { go('about'); setTimeout(() => document.getElementById('heritage')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 450); }}>
+              {en ? 'Our family heritage' : 'हमारी विरासत देखें'} <Icon name="arrow" />
+            </button>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** About page: three generations, oldest first, ending with the trust. */
+export function Lineage({ lang }) {
+  const en = lang === 'en';
+  return (
+    <section className="section bg-alt pat" id="heritage" aria-labelledby="heritage-title">
+      <div className="container narrow">
+        <div className="section-head text-center reveal">
+          <p className="eyebrow eyebrow--center">{en ? 'Memory & Blessings' : 'स्मृति एवं आशीर्वाद'}</p>
+          <h2 id="heritage-title" className="h-xl">{en ? 'Our family heritage' : 'हमारी विरासत'}</h2>
+          <p className="lead">{en ? 'The elders whose blessings make this seva possible.' : 'जिनके आशीर्वाद से यह सेवा संभव है।'}</p>
+        </div>
+        <ol className="lineage">
+          {LINEAGE.map(g => (
+            <li key={g.id} className={`lineage__item reveal${g.portrait ? ' lineage__item--main' : ''}`}>
+              <div className="lineage__media">
+                {g.portrait ? (
+                  <ArchPortrait lang={lang} size="sm" />
+                ) : (
+                  <img src={g.photo.src} srcSet={`${g.photo.small} 640w, ${g.photo.src} 1200w`} sizes="(max-width: 700px) 100vw, 360px" alt={g.names[lang]} loading="lazy" decoding="async" />
+                )}
+              </div>
+              <div className="lineage__body">
+                <p className="trustee-role">{g.relation[lang]}</p>
+                <h3>{g.names[lang]}</h3>
+                <p>{g.text[lang]}</p>
+              </div>
+            </li>
+          ))}
+          <li className="lineage__item lineage__item--trust reveal">
+            <div className="lineage__trust">
+              <Icon name="heart" />
+              <div>
+                <p className="trustee-role">{en ? 'Carrying the legacy forward' : 'विरासत आगे बढ़ाते हुए'}</p>
+                <h3>{en ? 'Atshri Trust' : 'अथश्री ट्रस्ट'}</h3>
+                <p>{en ? 'Founded by Smt. Maya Shrivastava, with trustees Pavan and Abhishek — in service of society, in their memory.' : 'श्रीमती माया श्रीवास्तव द्वारा स्थापित, ट्रस्टी पवन एवं अभिषेक के साथ — उनकी स्मृति में समाज की सेवा हेतु।'}</p>
+              </div>
+            </div>
+          </li>
+        </ol>
       </div>
     </section>
   );

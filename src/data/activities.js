@@ -354,7 +354,7 @@ export const ACTIVITIES = [
     date: '2026-11-15',
     endDate: '2026-11-21',
     venue: { en: 'Rewa, Madhya Pradesh', hi: 'रीवा, मध्य प्रदेश' },
-    instagram: 'https://www.instagram.com/reel/De62m7EtZty/',
+    instagram: ['https://www.instagram.com/reel/De62m7EtZty/', 'https://www.instagram.com/reel/DfJr28TNN5Y/'],
     text: {
       en: 'Atshri Trust invites you to a seven-day Shrimad Bhagwat Katha from 15 to 21 November. Join us every day for katha, bhajan and aarti — and bring your family and friends to share in this sacred occasion.',
       hi: 'अथश्री ट्रस्ट आपको 15 से 21 नवम्बर तक सप्त दिवसीय श्रीमद् भागवत कथा में सादर आमंत्रित करता है। प्रतिदिन कथा, भजन एवं आरती में सपरिवार पधारें और इस पावन अवसर का पुण्य लाभ लें।',
