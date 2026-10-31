@@ -59,7 +59,7 @@ src/
 - Every user-facing text field is `{ en, hi }`; render with `field[lang]`. Always supply both languages.
 
 ## Theme
-- `data-theme="light|dark"` on `<html>`, persisted in `localStorage` key `atshri.theme`.
+- `data-theme="light|dark"` on `<html>`, dark by default, persisted in `localStorage` key `atshri.theme.v2`.
 - `App.jsx` also updates `<meta name="theme-color">` (`#F4831F` light / `#12100e` dark).
 - Use CSS variables (`var(--sfp)`, `var(--tx)`, `var(--mid)`, `var(--sf)`, `--logo-*` …) rather than hard-coded colors.
 

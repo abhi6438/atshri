@@ -29,7 +29,7 @@ import {
 } from './utils/navigation';
 
 const clone = x => structuredClone(x);
-const THEME_KEY = 'atshri.theme';
+const THEME_KEY = 'atshri.theme.v2'; // new key so old auto-saved 'light' values don't override the dark default
 
 /** Per-page <title> and meta description (bilingual). */
 const SEO = {
@@ -77,7 +77,10 @@ export default function App() {
   const navigate = useNavigate();
 
   const [theme, setTheme] = useState(() =>
-    typeof window !== 'undefined' && localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light',
+    (() => {
+      // dark by default; light only if the visitor chose it
+      try { return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'; } catch { return 'dark'; }
+    })(),
   );
 
   useEffect(() => {

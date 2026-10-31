@@ -5,10 +5,10 @@ import './styles/global.css';
 import App from './App';
 
 try {
-  const t = localStorage.getItem('atshri.theme');
-  document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+  const t = localStorage.getItem('atshri.theme.v2');
+  document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark'); // dark by default
 } catch {
-  document.documentElement.setAttribute('data-theme', 'light');
+  document.documentElement.setAttribute('data-theme', 'dark');
 }
 
 createRoot(document.getElementById('root')).render(
