@@ -291,7 +291,7 @@ export function AdminDash({
   };
 
   const tabStyle = id => ({
-    padding: '9px 16px', borderRadius: 9, fontFamily: 'inherit', fontWeight: 700,
+    padding: '9px 18px', borderRadius: 999, fontFamily: 'inherit', fontWeight: 600,
     fontSize: 13, cursor: 'pointer',
     background: tab === id ? 'var(--sf)' : 'var(--surface)',
     color: tab === id ? '#fff' : 'var(--tx)',
@@ -299,15 +299,15 @@ export function AdminDash({
   });
 
   return (
-    <div style={{ paddingTop: 64, minHeight: '100vh', background: 'var(--sfp)' }}>
+    <div style={{ paddingTop: 'var(--nav-h)', minHeight: '100vh', background: 'var(--bg)' }}>
 
       {/* Top bar */}
-      <div style={{ background: 'linear-gradient(135deg,#F4831F,#C96500)', padding: '18px 20px' }}>
+      <div className="admin-bar">
         <div className="wrap" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Logo size={38} />
             <div>
-              <div style={{ color: '#fff', fontWeight: 800, fontSize: 20 }}>Admin Dashboard</div>
+              <div style={{ color: '#fff', fontFamily: 'var(--font-serif)', fontWeight: 500, fontSize: 22 }}>Admin Dashboard</div>
               <div style={{ color: 'rgba(255,255,255,.7)', fontSize: 12 }}>
                 {acts.length} activities · {acts.filter(a => a.visible).length} visible · {acts.filter(a => a.featured).length} featured · {acts.filter(a => a.upcoming).length} upcoming · {acts.filter(a => a.image).length} with photos
               </div>
@@ -322,11 +322,11 @@ export function AdminDash({
         </div>
       </div>
 
-      <div className="wrap" style={{ padding: '24px 20px' }}>
+      <div className="wrap" style={{ padding: '28px var(--gutter)' }}>
 
         {/* Cloudinary config */}
-        <div style={{ background: '#FFFBE6', border: '1.5px solid #F4C43060', borderRadius: 13, padding: 18, marginBottom: 20 }}>
-          <h3 style={{ fontWeight: 700, marginBottom: 5, color: '#92400E' }}>☁️ Cloudinary Setup (for photo uploads)</h3>
+        <div className="admin-note">
+          <h3>☁️ Cloudinary Setup (for photo uploads)</h3>
           <p style={{ fontSize: 13, color: 'var(--mid)', marginBottom: 9 }}>
             Enter your Cloud Name and create an unsigned upload preset named <strong>atshri_uploads</strong>.
             You can also set <code>VITE_CLOUDINARY_CLOUD_NAME</code> in your <code>.env</code> file.
@@ -370,7 +370,7 @@ export function AdminDash({
                         <span style={{ fontSize: 11, color: 'var(--mid)' }}>📅 {a.date}</span>
                         {a.image    && <span style={{ fontSize: 11, color: '#16A34A', fontWeight: 700 }}>📸 Photo</span>}
                         {a.featured && <span style={{ fontSize: 11, color: 'var(--sf)', fontWeight: 700 }}>⭐ Featured</span>}
-                        {a.upcoming && <span style={{ fontSize: 11, color: '#C2410C', fontWeight: 700 }}>📅 Upcoming</span>}
+                        {a.upcoming && <span style={{ fontSize: 11, color: 'var(--accent)', fontWeight: 700 }}>📅 Upcoming</span>}
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -645,7 +645,7 @@ export function AdminDash({
                       <tr key={m.id} style={{ borderBottom: '1px solid var(--bd)', opacity: m.visible ? 1 : 0.65 }}>
                         <td style={{ padding: '12px 14px', verticalAlign: 'middle' }}>
                           <div style={{
-                            width: 40, height: 40, background: 'linear-gradient(135deg,#F4831F,#C96500)', borderRadius: '50%',
+                            width: 40, height: 40, background: 'var(--brand-700)', borderRadius: '50%',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, color: '#fff',
                           }}>
                             {m.initials}
@@ -894,7 +894,7 @@ export function AdminDash({
                   readOnly
                   value={JSON.stringify(data, null, 2)}
                   rows={6}
-                  style={{ fontFamily: 'monospace', fontSize: 12, background: '#1C1410', color: '#FCD34D', border: 'none', borderRadius: 9, padding: 14, resize: 'vertical', width: '100%' }}
+                  style={{ fontFamily: 'monospace', fontSize: 12, background: '#0f1830', color: '#d6be92', border: 'none', borderRadius: 9, padding: 14, resize: 'vertical', width: '100%' }}
                 />
               </div>
             ))}

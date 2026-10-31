@@ -144,7 +144,7 @@ export function VideoModal({ videos, initialIndex = 0, onClose }) {
 
   return (
     <div onClick={onClose} style={{
-      position: 'fixed', inset: 0, zIndex: 1000,
+      position: 'fixed', inset: 0, zIndex: 1500,
       background: 'rgba(0,0,0,0.92)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '12px', animation: 'vmFadeIn .18s ease',

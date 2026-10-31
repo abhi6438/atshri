@@ -1,11 +1,8 @@
-export function Divider({ children }) {
+export function Divider({ children, count }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '0 0 18px' }}>
-      <div style={{ flex: 1, height: 1, background: 'var(--bd)' }} />
-      <span style={{ fontWeight: 700, fontSize: 12, color: 'var(--mid)', letterSpacing: 1.5 }}>
-        {children}
-      </span>
-      <div style={{ flex: 1, height: 1, background: 'var(--bd)' }} />
+    <div className="sub-head">
+      <h2>{children}</h2>
+      {count != null && <span className="count">{count}</span>}
     </div>
   );
 }

@@ -1,10 +1,15 @@
 import { useState } from 'react';
+import { PageHeader } from '../components/common/PageHeader';
+import { Icon } from '../components/common/Icon';
+import { Photo } from '../components/sections';
 
 const DONATION_AMOUNTS = [101, 251, 501, 1001];
 
-export function PageInvolved({ lang }) {
+export function PageInvolved({ lang, go }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', msg: '' });
   const [sent, setSent] = useState(false);
+  const [amount, setAmount] = useState(null);
+  const en = lang === 'en';
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -14,91 +19,87 @@ export function PageInvolved({ lang }) {
   const updateField = field => e => setForm(prev => ({ ...prev, [field]: e.target.value }));
 
   return (
-    <div style={{ paddingTop: 64 }}>
-      <section style={{ background: 'var(--hero-grad)', padding: '56px 20px', textAlign: 'center' }}>
-        <div className="wrap">
-          <h1 className="sxt">{lang === 'en' ? 'Get Involved' : 'जुड़ें हमसे'}</h1>
-          <p className="sxs">
-            {lang === 'en' ? 'Give your time or give your support — both matter.' : 'समय दें या सहयोग दें — दोनों मायने रखते हैं।'}
-          </p>
-        </div>
-      </section>
+    <>
+      <PageHeader
+        lang={lang}
+        go={go}
+        crumb={en ? 'Get Involved' : 'जुड़ें'}
+        eyebrow={en ? 'Get Involved' : 'जुड़ें हमसे'}
+        title={en ? 'Give your time, or give your support' : 'समय दें या सहयोग दें'}
+        lead={en ? 'Both matter. Every volunteer hour and every contribution reaches people in need.' : 'दोनों मायने रखते हैं। हर स्वयंसेवा और हर योगदान जरूरतमंदों तक पहुँचता है।'}
+      />
 
-      <section className="sec" style={{ background: 'var(--surface)' }}>
-        <div className="wrap" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 32 }}>
-
-          {/* Donate card */}
-          <div className="card" style={{ padding: 32 }}>
-            <div style={{ fontSize: 46, marginBottom: 13 }}>💝</div>
-            <h2 style={{ fontWeight: 800, fontSize: 23, marginBottom: 10 }}>
-              {lang === 'en' ? 'Support Our Cause' : 'सहयोग करें'}
-            </h2>
-            <p style={{ color: 'var(--mid)', lineHeight: 1.75, marginBottom: 22 }}>
-              {lang === 'en'
-                ? 'Your contribution fuels our mission. Every rupee goes directly to people in need.'
-                : 'आपका योगदान हमारे मिशन को आगे बढ़ाता है।'}
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 11, marginBottom: 17 }}>
-              {DONATION_AMOUNTS.map(n => (
-                <button key={n} className="bout" style={{ padding: '11px 8px', fontSize: 15 }}>
-                  ₹{n}
-                </button>
-              ))}
+      <section className="section">
+        <div className="container grid grid-2" style={{ alignItems: 'start' }}>
+          {/* Support */}
+          <div className="card reveal" style={{ overflow: 'hidden' }}>
+            <div className="media" style={{ aspectRatio: '16 / 8', borderRadius: 0 }}>
+              <Photo k="community" lang={lang} sizes="(max-width: 680px) 100vw, 50vw" />
             </div>
-            <button className="bsf" style={{ width: '100%', padding: 13, fontSize: 16 }}>
-              {lang === 'en' ? 'Donate Now 🙏' : 'दान करें 🙏'}
-            </button>
-            <p style={{ fontSize: 12, color: 'var(--mid)', marginTop: 11, textAlign: 'center' }}>
-              {lang === 'en' ? 'UPI / Bank Transfer / Cash — all accepted' : 'UPI / बैंक ट्रांसफर / नकद — सभी स्वीकार्य'}
-            </p>
+            <div style={{ padding: 'clamp(22px, 3.5vw, 36px)' }}>
+              <p className="eyebrow">{en ? 'Support' : 'सहयोग'}</p>
+              <h2 className="h-lg" style={{ marginBottom: 12 }}>{en ? 'Support our cause' : 'सहयोग करें'}</h2>
+              <p className="muted" style={{ marginBottom: 22 }}>
+                {en ? 'Your contribution fuels our mission. Every rupee goes directly to people in need.' : 'आपका योगदान हमारे मिशन को आगे बढ़ाता है। हर रुपया सीधे जरूरतमंदों तक पहुँचता है।'}
+              </p>
+              <div className="chip-row" role="group" aria-label={en ? 'Choose an amount' : 'राशि चुनें'} style={{ marginBottom: 18 }}>
+                {DONATION_AMOUNTS.map(n => (
+                  <button key={n} type="button" className={`chip${amount === n ? ' is-active' : ''}`} aria-pressed={amount === n} onClick={() => setAmount(n)} style={{ minWidth: 84, justifyContent: 'center' }}>
+                    ₹{n}
+                  </button>
+                ))}
+              </div>
+              <button type="button" className="btn btn-primary btn-block">
+                {en ? 'Donate now' : 'दान करें'} <Icon name="heart" />
+              </button>
+              <p className="muted" style={{ fontSize: 'var(--fs-xs)', marginTop: 12, textAlign: 'center' }}>
+                {en ? 'UPI / Bank Transfer / Cash — all accepted' : 'UPI / बैंक ट्रांसफर / नकद — सभी स्वीकार्य'}
+              </p>
+            </div>
           </div>
 
-          {/* Volunteer card */}
-          <div className="card" style={{ padding: 32 }}>
-            <div style={{ fontSize: 46, marginBottom: 13 }}>🙌</div>
-            <h2 style={{ fontWeight: 800, fontSize: 23, marginBottom: 10 }}>
-              {lang === 'en' ? 'Become a Volunteer' : 'स्वयंसेवक बनें'}
-            </h2>
-            <p style={{ color: 'var(--mid)', lineHeight: 1.75, marginBottom: 20 }}>
-              {lang === 'en' ? 'No skill is too small. Your time and energy matter enormously.' : 'आपका हर पल मायने रखता है।'}
+          {/* Volunteer */}
+          <div className="card reveal reveal-d1" style={{ padding: 'clamp(22px, 3.5vw, 36px)' }}>
+            <p className="eyebrow">{en ? 'Volunteer' : 'स्वयंसेवा'}</p>
+            <h2 className="h-lg" style={{ marginBottom: 12 }}>{en ? 'Become a volunteer' : 'स्वयंसेवक बनें'}</h2>
+            <p className="muted" style={{ marginBottom: 22 }}>
+              {en ? 'No skill is too small. Your time and energy matter enormously.' : 'आपका हर पल मायने रखता है।'}
             </p>
 
             {sent ? (
-              <div style={{ textAlign: 'center', padding: '26px 0' }}>
-                <div style={{ fontSize: 46, marginBottom: 11 }}>✅</div>
-                <h3 style={{ color: 'var(--sf)', fontWeight: 700, fontSize: 19, marginBottom: 7 }}>
-                  {lang === 'en' ? 'Welcome to the family!' : 'परिवार में स्वागत है!'}
-                </h3>
-                <p style={{ color: 'var(--mid)' }}>
-                  {lang === 'en' ? "We'll reach out to you shortly." : 'हम जल्द संपर्क करेंगे।'}
-                </p>
+              <div className="success-state" role="status">
+                <div className="success-state__icon"><Icon name="check" /></div>
+                <h3>{en ? 'Welcome to the family!' : 'परिवार में स्वागत है!'}</h3>
+                <p className="muted">{en ? "We'll reach out to you shortly." : 'हम जल्द संपर्क करेंगे।'}</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <input
-                  value={form.name} onChange={updateField('name')}
-                  placeholder={lang === 'en' ? 'Full Name *' : 'पूरा नाम *'} required
-                />
-                <input
-                  type="email" value={form.email} onChange={updateField('email')}
-                  placeholder={lang === 'en' ? 'Email *' : 'ईमेल *'} required
-                />
-                <input
-                  type="tel" value={form.phone} onChange={updateField('phone')}
-                  placeholder={lang === 'en' ? 'Phone' : 'फोन'}
-                />
-                <textarea
-                  rows={3} value={form.msg} onChange={updateField('msg')}
-                  placeholder={lang === 'en' ? 'Why do you want to volunteer?' : 'आप स्वयंसेवक क्यों बनना चाहते हैं?'}
-                />
-                <button type="submit" className="bsf" style={{ padding: 13, fontSize: 15 }}>
-                  {lang === 'en' ? 'Join as Volunteer 🙏' : 'स्वयंसेवक बनें 🙏'}
+              <form onSubmit={handleSubmit} className="form-stack">
+                <div className="field">
+                  <label htmlFor="v-name">{en ? 'Full name' : 'पूरा नाम'} *</label>
+                  <input id="v-name" value={form.name} onChange={updateField('name')} autoComplete="name" required />
+                </div>
+                <div className="form-row">
+                  <div className="field">
+                    <label htmlFor="v-email">{en ? 'Email' : 'ईमेल'} *</label>
+                    <input id="v-email" type="email" value={form.email} onChange={updateField('email')} autoComplete="email" required />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="v-phone">{en ? 'Phone' : 'फोन'}</label>
+                    <input id="v-phone" type="tel" value={form.phone} onChange={updateField('phone')} autoComplete="tel" inputMode="tel" />
+                  </div>
+                </div>
+                <div className="field">
+                  <label htmlFor="v-msg">{en ? 'Why do you want to volunteer?' : 'आप स्वयंसेवक क्यों बनना चाहते हैं?'}</label>
+                  <textarea id="v-msg" rows={3} value={form.msg} onChange={updateField('msg')} />
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  {en ? 'Join as volunteer' : 'स्वयंसेवक बनें'} <Icon name="arrow" className="arrow" />
                 </button>
               </form>
             )}
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }

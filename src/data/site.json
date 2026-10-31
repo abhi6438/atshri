@@ -1,11 +1,65 @@
 {
   "menu": [
-    { "id": "home", "icon": "🏠", "label": { "en": "Home", "hi": "होम" }, "enabled": true, "showInNav": true },
-    { "id": "about", "icon": "ℹ️", "label": { "en": "About Us", "hi": "हमारे बारे में" }, "enabled": true, "showInNav": true },
-    { "id": "activities", "icon": "🎯", "label": { "en": "Activities", "hi": "गतिविधियाँ" }, "enabled": true, "showInNav": true },
-    { "id": "gallery", "icon": "🖼️", "label": { "en": "Gallery", "hi": "गैलरी" }, "enabled": true, "showInNav": true },
-    { "id": "involved", "icon": "🤝", "label": { "en": "Get Involved", "hi": "जुड़ें" }, "enabled": false, "showInNav": false },
-    { "id": "contact", "icon": "📞", "label": { "en": "Contact", "hi": "संपर्क" }, "enabled": true, "showInNav": true }
+    {
+      "id": "home",
+      "icon": "🏠",
+      "label": {
+        "en": "Home",
+        "hi": "होम"
+      },
+      "enabled": true,
+      "showInNav": true
+    },
+    {
+      "id": "about",
+      "icon": "ℹ️",
+      "label": {
+        "en": "About Us",
+        "hi": "हमारे बारे में"
+      },
+      "enabled": true,
+      "showInNav": true
+    },
+    {
+      "id": "activities",
+      "icon": "🎯",
+      "label": {
+        "en": "Activities",
+        "hi": "गतिविधियाँ"
+      },
+      "enabled": true,
+      "showInNav": true
+    },
+    {
+      "id": "gallery",
+      "icon": "🖼️",
+      "label": {
+        "en": "Gallery",
+        "hi": "गैलरी"
+      },
+      "enabled": true,
+      "showInNav": true
+    },
+    {
+      "id": "involved",
+      "icon": "🤝",
+      "label": {
+        "en": "Get Involved",
+        "hi": "जुड़ें"
+      },
+      "enabled": false,
+      "showInNav": false
+    },
+    {
+      "id": "contact",
+      "icon": "📞",
+      "label": {
+        "en": "Contact",
+        "hi": "संपर्क"
+      },
+      "enabled": true,
+      "showInNav": true
+    }
   ],
   "social": {
     "youtube": "https://www.youtube.com/@AtShri",
@@ -18,10 +72,121 @@
       "https://www.instagram.com/reel/DY9Y_mcyypG/"
     ]
   },
+  "trust": {
+    "name": {
+      "en": "Atshri Trust",
+      "hi": "अथश्री ट्रस्ट"
+    },
+    "type": {
+      "en": "Registered Public Charitable Trust",
+      "hi": "पंजीकृत सार्वजनिक धर्मार्थ ट्रस्ट"
+    },
+    "regNo": "MP30IGR18282026A102231435",
+    "regDate": "2026-10-29",
+    "regOffice": {
+      "en": "Sub Registrar Office, Rewa (M.P.)",
+      "hi": "उप पंजीयक कार्यालय, रीवा (म.प्र.)"
+    }
+  },
   "donateCta": {
     "show": false,
     "targetId": "involved",
-    "label": { "en": "Donate", "hi": "दान करें" },
+    "label": {
+      "en": "Donate",
+      "hi": "दान करें"
+    },
     "suffix": "🙏"
+  },
+  "images": {
+    "_note": "Representative placeholder photos (Unsplash) — replace with real Atshri photos in /public/images. See public/images/CREDITS.md",
+    "hero": {
+      "src": "/images/hero-1920.webp",
+      "srcMobile": "/images/hero-900.webp",
+      "alt": {
+        "en": "Ornate Indian temple gopuram at dusk",
+        "hi": "संध्या समय भारतीय मंदिर का गोपुरम"
+      }
+    },
+    "heritage": {
+      "src": "/images/heritage-1000.webp",
+      "srcSmall": "/images/heritage-600.webp",
+      "alt": {
+        "en": "Sandstone fort architecture of India",
+        "hi": "भारत की बलुआ पत्थर की किला वास्तुकला"
+      }
+    },
+    "culture": {
+      "src": "/images/culture-1000.webp",
+      "srcSmall": "/images/culture-600.webp",
+      "alt": {
+        "en": "Kalash with coconut and mango leaves for puja",
+        "hi": "पूजा हेतु नारियल व आम पत्तों सहित कलश"
+      }
+    },
+    "community": {
+      "src": "/images/community-1200.webp",
+      "srcSmall": "/images/community-640.webp",
+      "alt": {
+        "en": "Hands joined together forming a heart",
+        "hi": "एक साथ मिले हाथ"
+      }
+    },
+    "volunteers": {
+      "src": "/images/volunteers-1200.webp",
+      "srcSmall": "/images/volunteers-640.webp",
+      "alt": {
+        "en": "Volunteers packing relief boxes",
+        "hi": "राहत सामग्री पैक करते स्वयंसेवक"
+      }
+    },
+    "education": {
+      "src": "/images/education-1200.webp",
+      "srcSmall": "/images/education-640.webp",
+      "alt": {
+        "en": "Row of books",
+        "hi": "पुस्तकों की पंक्ति"
+      }
+    },
+    "health": {
+      "src": "/images/health-1200.webp",
+      "srcSmall": "/images/health-640.webp",
+      "alt": {
+        "en": "Stethoscope on a desk",
+        "hi": "स्टेथोस्कोप"
+      }
+    },
+    "environment": {
+      "src": "/images/environment-1200.webp",
+      "srcSmall": "/images/environment-640.webp",
+      "alt": {
+        "en": "Young seedlings growing",
+        "hi": "उगते हुए नन्हे पौधे"
+      }
+    },
+    "nature": {
+      "src": "/images/nature-1600.webp",
+      "srcSmall": "/images/nature-800.webp",
+      "alt": {
+        "en": "Fields at sunrise",
+        "hi": "सूर्योदय के समय खेत"
+      }
+    }
+  },
+  "contact": {
+    "emails": [
+      "info@atshri.org",
+      "atshri.trust@gmail.com"
+    ],
+    "phone": "",
+    "address": {
+      "en": "Rewa, Madhya Pradesh, India",
+      "hi": "रीवा, मध्य प्रदेश, भारत"
+    },
+    "hours": {
+      "en": "Mon–Sat, 9am–6pm",
+      "hi": "सोम–शनि, सुबह 9 – शाम 6"
+    },
+    "x": "https://x.com/AtshriTrust",
+    "xHandle": "@AtshriTrust"
   }
 }

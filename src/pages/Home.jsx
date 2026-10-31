@@ -1,328 +1,330 @@
 import { useState } from 'react';
-import { LogoFull } from '../components/common/Logo';
-import { ActCard } from '../components/ActCard';
 import SITE from '../data/site.json';
+import { ABOUT, FOCUS_AREAS } from '../data/content';
+import { ActCard } from '../components/ActCard';
 import { VideoModal } from '../components/common/VideoModal';
+import { Icon } from '../components/common/Icon';
+import { Photo, VisionMission, Trustees, Transparency, CtaBand } from '../components/sections';
+import { buildPlaylist, fmtDate, videosOf, ytThumb } from '../utils/media';
 
-const IG_GRAD = 'linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)';
+const FOCUS_LAYOUT = ['focus--a', 'focus--b', 'focus--c', 'focus--d', 'focus--e', 'focus--f'];
 
-function ytId(url) {
-  const m = url.match(/(?:shorts\/|watch\?v=|youtu\.be\/)([^?&]+)/);
-  return m ? m[1] : null;
-}
-
-export function PageHome({ lang, go, acts, cats, stats, pageEnabled, donateCta }) {
+export function PageHome({ lang, go, acts, cats, stats, team, values, pageEnabled, donateCta }) {
   const [homeVideo, setHomeVideo] = useState(null);
+  const en = lang === 'en';
 
-  // global playlist for all video-enabled acts
-  const playlist = acts.flatMap(a =>
-    (Array.isArray(a.youtube) ? a.youtube.filter(Boolean) : [])
-      .map(url => ({ url, title: a.heading[lang] }))
-  );
-
+  const playlist = buildPlaylist(acts, lang);
   const featured = acts.filter(a => a.featured).slice(0, 3);
   const upcoming = [...acts.filter(a => a.upcoming)]
     .sort((a, b) => String(a.date).localeCompare(String(b.date)))
-    .slice(0, 3);
+    .slice(0, 4);
   const doneCount = acts.filter(a => !a.upcoming).length;
   const visStats = stats
     .filter(s => s.visible)
-    .map(s => s.value === 'auto' ? { ...s, value: `${doneCount}+` } : s);
+    .map(s => (s.value === 'auto' ? { ...s, value: `${doneCount}+` } : s));
   const visCats = cats.filter(c => c.visible);
   const joinId = donateCta?.targetId || 'involved';
+  const actsOn = pageEnabled('activities');
+  const galleryOn = pageEnabled('gallery');
+  const hero = SITE.images?.hero;
+  const t = SITE.trust;
+
+  const recentVideos = acts
+    .filter(a => !a.upcoming)
+    .flatMap(a => videosOf(a).map(url => ({ url, act: a })))
+    .slice(0, 4);
 
   return (
     <>
-      {/* HERO */}
-      <section
-        className="pat"
-        style={{
-          minHeight: '100vh', display: 'flex', alignItems: 'center',
-          background: 'var(--hero-grad)',
-          paddingTop: 80,
-        }}
-      >
-        <div className="wrap" style={{ padding: '60px 20px', textAlign: 'center' }}>
-          <div className="u1" style={{ marginBottom: 26 }}>
-            <LogoFull size={88} lang={lang} />
-          </div>
-          <div className="u1" style={{
-            display: 'inline-block', background: 'var(--sfl)',
-            border: '1.5px solid var(--bd)', borderRadius: 50,
-            padding: '6px 22px', marginBottom: 20,
-          }}>
-            <span style={{ color: 'var(--sfd)', fontWeight: 700, fontSize: 13, lineHeight: 1.45 }}>
-              {lang === 'en'
-                ? '✦ सेवा परमो धर्मः — Service is the Highest Dharma ✦'
-                : '✦ सेवा परमो धर्मः — सर्वोच्च धर्म सेवा है ✦'}
-            </span>
-          </div>
-          <h1 className="u2" style={{ fontSize: 'clamp(34px,6vw,66px)', fontWeight: 800, lineHeight: 1.1, marginBottom: 20, color: 'var(--tx)' }}>
-            {lang === 'en' ? 'Together, We Serve' : 'मिलकर करें सेवा'}
-          </h1>
-          <p className="u3" style={{ fontSize: 'clamp(15px,2vw,18px)', color: 'var(--mid)', maxWidth: 560, margin: '0 auto 34px', lineHeight: 1.8 }}>
-            {lang === 'en'
-              ? 'Atshri is a community trust dedicated to selfless service — water in summer, warmth in winter, hope in every season.'
-              : 'अथश्री एक सामुदायिक ट्रस्ट है — गर्मी में पानी, सर्दी में कम्बल, हर मौसम में उम्मीद।'}
-          </p>
-          <div className="u3" style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {pageEnabled('gallery') && (
-              <button type="button" className="bsf" style={{ padding: '13px 30px', fontSize: 16 }} onClick={() => go('gallery')}>
-                {lang === 'en' ? 'View Gallery' : 'गैलरी देखें'}
-              </button>
-            )}
-            {pageEnabled(joinId) && (
-              <button type="button" className="bout" style={{ padding: '13px 30px', fontSize: 16 }} onClick={() => go(joinId)}>
-                {lang === 'en' ? 'Join Us' : 'हमसे जुड़ें'}
-              </button>
+      {/* ── HERO ───────────────────────────────────────────── */}
+      <section className="hero" aria-labelledby="hero-title">
+        {hero && (
+          <picture className="hero__bg">
+            {hero.srcMobile && <source media="(max-width: 600px)" srcSet={hero.srcMobile} />}
+            <img src={hero.src} alt={hero.alt?.[lang] || ''} decoding="async" />
+          </picture>
+        )}
+        <div className="container">
+          <div className="hero__content">
+            <p className="hero__mantra u1" lang="sa">सेवा परमो धर्मः</p>
+            <h1 id="hero-title" className="u1">
+              {en ? <>Together, we <em>serve</em> — with faith and compassion</> : <>मिलकर करें <em>सेवा</em> — श्रद्धा और करुणा के साथ</>}
+            </h1>
+            <p className="hero__lead u2">
+              {en
+                ? 'Atshri Trust is a public charitable trust from Rewa, Madhya Pradesh — bringing water in summer, warmth in winter, and hope in every season through temple seva, education, health and community care.'
+                : 'अथश्री ट्रस्ट रीवा, मध्य प्रदेश का एक सार्वजनिक धर्मार्थ न्यास है — गर्मी में जल, सर्दी में कम्बल और हर मौसम में आशा; मंदिर सेवा, शिक्षा, स्वास्थ्य एवं जनकल्याण के माध्यम से।'}
+            </p>
+            <div className="hero__actions u3">
+              {actsOn && (
+                <button type="button" className="btn btn-gold" onClick={() => go('activities')}>
+                  {en ? 'Explore our seva' : 'हमारी सेवा देखें'} <Icon name="arrow" className="arrow" />
+                </button>
+              )}
+              {pageEnabled(joinId) ? (
+                <button type="button" className="btn btn-ghost-light" onClick={() => go(joinId)}>
+                  {en ? 'Join us' : 'हमसे जुड़ें'}
+                </button>
+              ) : galleryOn && (
+                <button type="button" className="btn btn-ghost-light" onClick={() => go('gallery')}>
+                  {en ? 'View gallery' : 'गैलरी देखें'}
+                </button>
+              )}
+            </div>
+            {t && (
+              <p className="hero__reg u3">
+                <Icon name="shield" />
+                {t.type[lang]} · {en ? 'Rewa, Madhya Pradesh' : 'रीवा, मध्य प्रदेश'}
+              </p>
             )}
           </div>
+        </div>
+      </section>
 
-          {visStats.length > 0 && (
-            <div className="home-stats-grid">
-              {visStats.map(s => (
-                <div key={s.id} className="card home-stat-card" style={{ padding: '18px 12px', textAlign: 'center' }}>
-                  <div style={{ fontSize: 24, marginBottom: 4 }}>{s.icon}</div>
-                  <div style={{ fontSize: 'clamp(22px, 5vw, 30px)', fontWeight: 800, color: 'var(--sf)', lineHeight: 1 }}>{s.value}</div>
-                  <div style={{ fontSize: 12, color: 'var(--mid)', fontWeight: 600, marginTop: 4, lineHeight: 1.35 }}>{s.label[lang]}</div>
+      {/* ── STATS RIBBON ───────────────────────────────────── */}
+      {visStats.length > 0 && (
+        <div className="stats-ribbon">
+          <div className="container">
+            <dl className="stats-ribbon__inner" aria-label={en ? 'Our impact' : 'हमारा प्रभाव'}>
+              {visStats.slice(0, 4).map(s => (
+                <div key={s.id} className="stat">
+                  <dt className="stat__label">{s.label[lang]}</dt>
+                  <dd className="stat__value">{s.value}</dd>
                 </div>
               ))}
+            </dl>
+          </div>
+        </div>
+      )}
+
+      {/* ── ABOUT INTRO ────────────────────────────────────── */}
+      <section className="section" aria-labelledby="about-title">
+        <div className="container split">
+          <div className="media media--frame about-media reveal">
+            <div className="media-inner"><Photo k="heritage" lang={lang} sizes="(max-width: 900px) 100vw, 45vw" /></div>
+          </div>
+          <div className="reveal reveal-d1">
+            <p className="eyebrow">{en ? 'About Atshri' : 'अथश्री के बारे में'}</p>
+            <h2 id="about-title" className="h-xl">{ABOUT.title[lang]}</h2>
+            <p className="lead">{ABOUT.body[lang]}</p>
+            <ul className="about-points">
+              {ABOUT.points.map(p => (
+                <li key={p.en}><Icon name="check" /> <span>{p[lang]}</span></li>
+              ))}
+            </ul>
+            {pageEnabled('about') && (
+              <button type="button" className="link-arrow" onClick={() => go('about')}>
+                {en ? 'Our story & trustees' : 'हमारी कहानी एवं ट्रस्टी'} <Icon name="arrow" />
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOCUS AREAS ────────────────────────────────────── */}
+      <section className="section bg-alt" aria-labelledby="focus-title">
+        <div className="container">
+          <div className="section-head section-head--row reveal">
+            <div style={{ maxWidth: 640 }}>
+              <p className="eyebrow">{en ? 'Focus Areas' : 'कार्यक्षेत्र'}</p>
+              <h2 id="focus-title" className="h-xl">{en ? 'Many paths, one purpose — seva' : 'अनेक मार्ग, एक उद्देश्य — सेवा'}</h2>
+            </div>
+            <p className="lead" style={{ maxWidth: 420 }}>
+              {en
+                ? 'From temple courtyards to classrooms and city streets — our initiatives span culture, welfare, learning, health and nature.'
+                : 'मंदिर प्रांगण से कक्षाओं और शहर की गलियों तक — हमारी पहलें संस्कृति, कल्याण, शिक्षा, स्वास्थ्य और प्रकृति तक फैली हैं।'}
+            </p>
+          </div>
+
+          <div className="focus-grid">
+            {FOCUS_AREAS.map((f, i) => {
+              const Tag = actsOn ? 'button' : 'div';
+              return (
+                <Tag
+                  key={f.id}
+                  type={actsOn ? 'button' : undefined}
+                  className={`focus ${FOCUS_LAYOUT[i]} reveal reveal-d${(i % 3) + 1}`}
+                  onClick={actsOn ? () => go('activities') : undefined}
+                >
+                  <Photo k={f.image} lang={lang} sizes={i === 0 ? '(max-width: 900px) 100vw, 60vw' : '(max-width: 560px) 100vw, 33vw'} />
+                  <div className="focus__body">
+                    <p className="focus__tag">{f.tag[lang]}</p>
+                    <h3>{f.title[lang]}</h3>
+                    <p>{f.text[lang]}</p>
+                  </div>
+                </Tag>
+              );
+            })}
+          </div>
+
+          {visCats.length > 0 && (
+            <div className="cat-strip reveal">
+              <span className="cat-strip__label">{en ? 'Seva categories:' : 'सेवा श्रेणियाँ:'}</span>
+              {visCats.map(c =>
+                actsOn ? (
+                  <button key={c.id} type="button" className="chip" onClick={() => go('activities')}>
+                    <span aria-hidden="true">{c.icon}</span> {c.name[lang]}
+                  </button>
+                ) : (
+                  <span key={c.id} className="chip" style={{ cursor: 'default' }}>
+                    <span aria-hidden="true">{c.icon}</span> {c.name[lang]}
+                  </span>
+                ),
+              )}
             </div>
           )}
         </div>
       </section>
 
-      {/* RECENT SEVA */}
+      {/* ── RECENT SEVA ────────────────────────────────────── */}
       {featured.length > 0 && (
-        <section className="sec" style={{ background: 'var(--surface)' }}>
-          <div className="wrap">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 30, flexWrap: 'wrap', gap: 12 }}>
+        <section className="section" aria-labelledby="recent-title">
+          <div className="container">
+            <div className="section-head section-head--row reveal">
               <div>
-                <p style={{ color: 'var(--sf)', fontWeight: 700, fontSize: 12, letterSpacing: 2.5, marginBottom: 6 }}>RECENT SEVA</p>
-                <h2 className="sxt" style={{ marginBottom: 0 }}>
-                  {lang === 'en' ? "What We've Done Recently" : 'हमारी हालिया सेवा'}
+                <p className="eyebrow">{en ? 'Recent Seva' : 'हालिया सेवा'}</p>
+                <h2 id="recent-title" className="h-xl" style={{ marginBottom: 0 }}>
+                  {en ? 'What we’ve done recently' : 'हमारे हालिया सेवा कार्य'}
                 </h2>
               </div>
-              <div style={{ display: 'flex', gap: 10 }}>
-                {pageEnabled('gallery') && (
-                  <button type="button" className="bout" style={{ padding: '8px 17px', fontSize: 13 }} onClick={() => go('gallery')}>
-                    {lang === 'en' ? 'Gallery →' : 'गैलरी →'}
-                  </button>
-                )}
-                {pageEnabled('activities') && (
-                  <button type="button" className="bout" style={{ padding: '8px 17px', fontSize: 13 }} onClick={() => go('activities')}>
-                    {lang === 'en' ? 'All →' : 'सभी →'}
-                  </button>
-                )}
-              </div>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(290px,1fr))', gap: 20 }}>
-              {featured.map(a => <ActCard key={a.id} a={a} lang={lang} cats={cats} playlist={playlist} />)}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* UPCOMING EVENTS */}
-      {upcoming.length > 0 && (
-        <section className="sec pat" style={{ background: 'var(--sfp)' }}>
-          <div className="wrap">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 30, flexWrap: 'wrap', gap: 12 }}>
-              <div>
-                <p style={{ color: 'var(--sf)', fontWeight: 700, fontSize: 12, letterSpacing: 2.5, marginBottom: 6 }}>UPCOMING</p>
-                <h2 className="sxt" style={{ marginBottom: 0 }}>
-                  {lang === 'en' ? 'Events Coming Up' : 'आगामी कार्यक्रम'}
-                </h2>
-              </div>
-              <div style={{ display: 'flex', gap: 10 }}>
-                {pageEnabled('gallery') && (
-                  <button type="button" className="bout" style={{ padding: '8px 17px', fontSize: 13 }} onClick={() => go('gallery')}>
-                    {lang === 'en' ? 'Gallery →' : 'गैलरी →'}
-                  </button>
-                )}
-                {pageEnabled('activities') && (
-                  <button type="button" className="bout" style={{ padding: '8px 17px', fontSize: 13 }} onClick={() => go('activities')}>
-                    {lang === 'en' ? 'All →' : 'सभी →'}
-                  </button>
-                )}
-              </div>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(290px,1fr))', gap: 20 }}>
-              {upcoming.map(a => <ActCard key={a.id} a={a} lang={lang} cats={cats} playlist={playlist} />)}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* WHAT WE DO */}
-      <section className="sec pat" style={{ background: 'var(--sfp)' }}>
-        <div className="wrap" style={{ textAlign: 'center' }}>
-          <p style={{ color: 'var(--sf)', fontWeight: 700, fontSize: 12, letterSpacing: 2.5, marginBottom: 8 }}>OUR SEVA</p>
-          <h2 className="sxt">{lang === 'en' ? 'What We Do' : 'हम क्या करते हैं'}</h2>
-          <p className="sxs">{lang === 'en' ? 'Many ways, one mission — to serve.' : 'अनेक रास्ते, एक मिशन — सेवा।'}</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(175px,1fr))', gap: 13 }}>
-            {visCats.map(c => (
-              <div
-                key={c.id}
-                className="card"
-                style={{
-                  padding: '20px 13px',
-                  textAlign: 'center',
-                  cursor: pageEnabled('activities') ? 'pointer' : 'default',
-                  opacity: pageEnabled('activities') ? 1 : 0.65,
-                }}
-                onClick={() => pageEnabled('activities') && go('activities')}
-                role={pageEnabled('activities') ? 'button' : undefined}
-                tabIndex={pageEnabled('activities') ? 0 : undefined}
-                onKeyDown={e => pageEnabled('activities') && e.key === 'Enter' && go('activities')}
-              >
-                <div style={{ fontSize: 32, marginBottom: 9 }}>{c.icon}</div>
-                <div style={{ fontWeight: 700, fontSize: 14 }}>{c.name[lang]}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FOLLOW US */}
-      {(SITE.social?.youtube || SITE.social?.instagram) && (() => {
-        const recentVideos = acts
-          .filter(a => !a.upcoming && Array.isArray(a.youtube))
-          .flatMap(a => a.youtube.filter(Boolean).map(url => ({ url, act: a })))
-          .slice(0, 4);
-        return (
-          <section className="sec pat" style={{ background: 'var(--sfp)' }}>
-            <div className="wrap">
-              <p style={{ color: 'var(--sf)', fontWeight: 700, fontSize: 12, letterSpacing: 2.5, marginBottom: 8, textAlign: 'center' }}>STAY CONNECTED</p>
-              <h2 className="sxt" style={{ textAlign: 'center', marginBottom: 6 }}>
-                {lang === 'en' ? 'Follow Our Journey' : 'हमारे साथ जुड़ें'}
-              </h2>
-              <p className="sxs" style={{ textAlign: 'center' }}>
-                {lang === 'en' ? 'Subscribe & follow — watch our seva unfold in real time.' : 'सब्सक्राइब और फॉलो करें — सेवा को लाइव देखें।'}
-              </p>
-
-              {/* Platform cards */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,260px),1fr))', gap: 16, marginBottom: 36 }}>
-                {SITE.social?.youtube && (
-                  <a href={SITE.social.youtube} target="_blank" rel="noopener noreferrer"
-                    style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 14, padding: '18px 20px', background: '#FF0000', borderRadius: 16, textDecoration: 'none', boxShadow: '0 4px 18px rgba(255,0,0,0.3)', transition: 'transform .18s, box-shadow .18s' }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(255,0,0,0.4)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 18px rgba(255,0,0,0.3)'; }}
-                  >
-                    <svg width="52" height="36" viewBox="0 0 52 36" fill="none">
-                      <rect width="52" height="36" rx="8" fill="rgba(255,255,255,0.2)" />
-                      <polygon points="21,10 21,26 36,18" fill="white" />
-                    </svg>
-                    <div>
-                      <div style={{ color: '#fff', fontWeight: 800, fontSize: 17 }}>{lang === 'en' ? 'YouTube' : 'यूट्यूब'}</div>
-                      <div style={{ color: 'rgba(255,255,255,.8)', fontSize: 13, marginTop: 2 }}>{SITE.social.youtubeHandle} · {lang === 'en' ? 'Subscribe for videos' : 'वीडियो के लिए सब्सक्राइब करें'}</div>
-                    </div>
-                    <span style={{ marginLeft: 'auto', background: '#fff', color: '#FF0000', fontWeight: 800, fontSize: 13, padding: '7px 16px', borderRadius: 20, whiteSpace: 'nowrap' }}>
-                      ▶ {lang === 'en' ? 'Subscribe' : 'सब्सक्राइब'}
-                    </span>
-                  </a>
-                )}
-                {SITE.social?.instagram && (
-                  <a href={SITE.social.instagram} target="_blank" rel="noopener noreferrer"
-                    style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 14, padding: '18px 20px', background: IG_GRAD, borderRadius: 16, textDecoration: 'none', boxShadow: '0 4px 18px rgba(188,24,136,0.3)', transition: 'transform .18s, box-shadow .18s' }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(188,24,136,0.4)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 18px rgba(188,24,136,0.3)'; }}
-                  >
-                    <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
-                      <rect x="2" y="2" width="44" height="44" rx="12" stroke="rgba(255,255,255,0.5)" strokeWidth="2" fill="rgba(255,255,255,0.15)" />
-                      <rect x="10" y="10" width="28" height="28" rx="8" stroke="white" strokeWidth="2.5" fill="none" />
-                      <circle cx="24" cy="24" r="7" stroke="white" strokeWidth="2.5" fill="none" />
-                      <circle cx="33" cy="15" r="2" fill="white" />
-                    </svg>
-                    <div>
-                      <div style={{ color: '#fff', fontWeight: 800, fontSize: 17 }}>{lang === 'en' ? 'Instagram' : 'इंस्टाग्राम'}</div>
-                      <div style={{ color: 'rgba(255,255,255,.8)', fontSize: 13, marginTop: 2 }}>{SITE.social.instagramHandle} · {lang === 'en' ? 'Follow for reels & posts' : 'रील और पोस्ट के लिए फॉलो करें'}</div>
-                    </div>
-                    <span style={{ marginLeft: 'auto', background: '#fff', color: '#bc1888', fontWeight: 800, fontSize: 13, padding: '7px 16px', borderRadius: 20, whiteSpace: 'nowrap' }}>
-                      📸 {lang === 'en' ? 'Follow' : 'फॉलो'}
-                    </span>
-                  </a>
-                )}
-              </div>
-
-              {/* Latest video thumbnails */}
-              {recentVideos.length > 0 && (
-                <>
-                  <p style={{ fontWeight: 700, fontSize: 13, color: 'var(--mid)', marginBottom: 14 }}>
-                    {lang === 'en' ? '▶ Latest Videos' : '▶ ताज़े वीडियो'}
-                  </p>
-                  <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
-                    {recentVideos.map(({ url, act }) => {
-                      const id = ytId(url);
-                      if (!id) return null;
-                      return (
-                        <div key={url}
-                          onClick={() => setHomeVideo({ url, title: act.heading[lang], playlist })}
-                          style={{ flexShrink: 0, width: 220, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 3px 12px rgba(0,0,0,0.1)', transition: 'transform .18s', background: 'var(--card)' }}
-                          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
-                        >
-                          <div style={{ position: 'relative', paddingTop: '56.25%' }}>
-                            <img src={`https://img.youtube.com/vi/${id}/mqdefault.jpg`} alt={act.heading[lang]}
-                              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)' }}>
-                              <svg width="36" height="36" viewBox="0 0 36 36">
-                                <circle cx="18" cy="18" r="18" fill="rgba(255,255,255,0.88)" />
-                                <polygon points="15,11 27,18 15,25" fill="#FF0000" />
-                              </svg>
-                            </div>
-                          </div>
-                          <div style={{ padding: '10px 12px' }}>
-                            <div style={{ fontWeight: 700, fontSize: 12, lineHeight: 1.4, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                              {act.heading[lang]}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
+              {actsOn && (
+                <button type="button" className="link-arrow" onClick={() => go('activities')}>
+                  {en ? 'All activities' : 'सभी गतिविधियाँ'} <Icon name="arrow" />
+                </button>
               )}
             </div>
-          </section>
-        );
-      })()}
-
-      {/* CTA BANNER */}
-      <section style={{ background: 'linear-gradient(135deg,#F4831F,#C96500)', padding: '60px 20px', textAlign: 'center' }}>
-        <div className="wrap">
-          <h2 style={{ fontSize: 'clamp(24px,4vw,40px)', fontWeight: 800, color: '#fff', marginBottom: 14 }}>
-            {lang === 'en' ? 'Ready to Make a Difference?' : 'बदलाव लाने के लिए तैयार हैं?'}
-          </h2>
-          <p style={{ color: 'rgba(255,255,255,.85)', fontSize: 18, marginBottom: 30 }}>
-            {lang === 'en' ? 'Every hand matters. Every act counts.' : 'हर हाथ मायने रखता है।'}
-          </p>
-          <div style={{ display: 'flex', gap: 13, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {pageEnabled(joinId) && (
-              <button
-                type="button"
-                onClick={() => go(joinId)}
-                style={{ padding: '13px 28px', borderRadius: 11, fontSize: 16, fontFamily: 'inherit', fontWeight: 700, background: 'var(--surface)', color: 'var(--sf)', border: 'none', cursor: 'pointer' }}
-              >
-                {lang === 'en' ? 'Join Us' : 'जुड़ें'} 🙏
-              </button>
-            )}
-            {pageEnabled('gallery') && (
-              <button
-                type="button"
-                onClick={() => go('gallery')}
-                style={{ padding: '13px 28px', borderRadius: 11, fontSize: 16, fontFamily: 'inherit', fontWeight: 700, background: 'transparent', color: '#fff', border: '2px solid rgba(255,255,255,.6)', cursor: 'pointer' }}
-              >
-                {lang === 'en' ? 'See Gallery' : 'गैलरी देखें'}
-              </button>
-            )}
+            <div className="grid grid-3">
+              {featured.map((a, i) => (
+                <div key={a.id} className={`reveal reveal-d${i + 1}`}>
+                  <ActCard a={a} lang={lang} cats={cats} playlist={playlist} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* ── VISION / MISSION / VALUES ──────────────────────── */}
+      <VisionMission lang={lang} values={values} />
+
+      {/* ── UPCOMING EVENTS ────────────────────────────────── */}
+      {upcoming.length > 0 && (
+        <section className="section" aria-labelledby="upcoming-title">
+          <div className="container narrow">
+            <div className="section-head section-head--row reveal">
+              <div>
+                <p className="eyebrow">{en ? 'Upcoming' : 'आगामी'}</p>
+                <h2 id="upcoming-title" className="h-xl" style={{ marginBottom: 0 }}>
+                  {en ? 'Seva calendar' : 'सेवा कैलेंडर'}
+                </h2>
+              </div>
+              {actsOn && (
+                <button type="button" className="link-arrow" onClick={() => go('activities')}>
+                  {en ? 'View all' : 'सभी देखें'} <Icon name="arrow" />
+                </button>
+              )}
+            </div>
+            <ol className="events">
+              {upcoming.map(a => {
+                const d = new Date(`${a.date}T00:00:00`);
+                const valid = !Number.isNaN(d.getTime());
+                return (
+                  <li key={a.id} className="event reveal">
+                    <div className="event__date">
+                      <div className="event__day">{valid ? d.getDate() : '—'}</div>
+                      <div className="event__month">{fmtDate(a.date, lang)}</div>
+                    </div>
+                    <div>
+                      <h3>{a.heading[lang]}</h3>
+                      <p>{a.text[lang]}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        </section>
+      )}
+
+      {/* ── FOUNDER & TRUSTEES ─────────────────────────────── */}
+      <div className="bg-alt">
+        <Trustees lang={lang} team={team} />
+      </div>
+
+      {/* ── GALLERY / MEDIA ────────────────────────────────── */}
+      {(recentVideos.length > 0 || SITE.social?.youtube || SITE.social?.instagram) && (
+        <section className="section" aria-labelledby="media-title">
+          <div className="container">
+            <div className="section-head section-head--row reveal">
+              <div>
+                <p className="eyebrow">{en ? 'Gallery' : 'गैलरी'}</p>
+                <h2 id="media-title" className="h-xl" style={{ marginBottom: 0 }}>
+                  {en ? 'Seva in motion' : 'सेवा की झलक'}
+                </h2>
+              </div>
+              {galleryOn && (
+                <button type="button" className="link-arrow" onClick={() => go('gallery')}>
+                  {en ? 'Open gallery' : 'गैलरी खोलें'} <Icon name="arrow" />
+                </button>
+              )}
+            </div>
+
+            {recentVideos.length > 0 && (
+              <div className="video-row" style={{ marginBottom: 40 }}>
+                {recentVideos.map(({ url, act }, i) => (
+                  <button
+                    key={url}
+                    type="button"
+                    className={`video-tile reveal reveal-d${(i % 3) + 1}`}
+                    onClick={() => setHomeVideo({ url })}
+                  >
+                    <div className="video-tile__thumb">
+                      <img src={ytThumb(url)} alt="" loading="lazy" decoding="async" />
+                      <span className="video-tile__play"><Icon name="play" /></span>
+                    </div>
+                    <div className="video-tile__title">{act.heading[lang]}</div>
+                    <div className="video-tile__meta">{fmtDate(act.date, lang)}</div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="social-cards">
+              {SITE.social?.youtube && (
+                <a className="card card-hover social-card reveal" href={SITE.social.youtube} target="_blank" rel="noopener noreferrer">
+                  <span className="social-card__icon"><Icon name="youtube" /></span>
+                  <span>
+                    <strong>YouTube</strong>
+                    <span>{SITE.social.youtubeHandle} · {en ? 'Videos from the field' : 'सेवा के वीडियो'}</span>
+                  </span>
+                  <span className="link-arrow">{en ? 'Subscribe' : 'सब्सक्राइब'} <Icon name="external" /></span>
+                </a>
+              )}
+              {SITE.social?.instagram && (
+                <a className="card card-hover social-card reveal reveal-d1" href={SITE.social.instagram} target="_blank" rel="noopener noreferrer">
+                  <span className="social-card__icon"><Icon name="instagram" /></span>
+                  <span>
+                    <strong>Instagram</strong>
+                    <span>{SITE.social.instagramHandle} · {en ? 'Reels & moments' : 'रील एवं झलकियाँ'}</span>
+                  </span>
+                  <span className="link-arrow">{en ? 'Follow' : 'फॉलो'} <Icon name="external" /></span>
+                </a>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── TRANSPARENCY ───────────────────────────────────── */}
+      <Transparency lang={lang} go={go} pageEnabled={pageEnabled} showDocs={false} />
+
+      {/* ── CTA ────────────────────────────────────────────── */}
+      <CtaBand lang={lang} go={go} pageEnabled={pageEnabled} joinId={joinId} />
+
       {homeVideo && (
         <VideoModal
-          videos={homeVideo.playlist || [{ url: homeVideo.url, title: homeVideo.title }]}
-          initialIndex={Math.max(0, (homeVideo.playlist || []).findIndex(v => v.url === homeVideo.url))}
+          videos={playlist.length ? playlist : [{ url: homeVideo.url, title: '' }]}
+          initialIndex={Math.max(0, playlist.findIndex(v => v.url === homeVideo.url))}
           onClose={() => setHomeVideo(null)}
         />
       )}

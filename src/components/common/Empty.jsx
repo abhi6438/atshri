@@ -1,9 +1,11 @@
-export function Empty({ lang }) {
+import { Icon } from './Icon';
+
+export function Empty({ lang, children }) {
   return (
-    <div style={{ textAlign: 'center', padding: '56px 20px', color: 'var(--mid)' }}>
-      <div style={{ fontSize: 48, marginBottom: 14 }}>🔍</div>
-      <p style={{ fontSize: 16 }}>
-        {lang === 'en' ? 'Nothing found for this filter.' : 'इस फ़िल्टर के लिए कुछ नहीं मिला।'}
+    <div className="empty" role="status">
+      <Icon name="search" />
+      <p>
+        {children || (lang === 'en' ? 'Nothing found for this filter.' : 'इस फ़िल्टर के लिए कुछ नहीं मिला।')}
       </p>
     </div>
   );

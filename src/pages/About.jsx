@@ -1,73 +1,65 @@
-import { LogoFull } from '../components/common/Logo';
+import { ABOUT } from '../data/content';
+import { PageHeader } from '../components/common/PageHeader';
+import { Icon } from '../components/common/Icon';
+import { Photo, VisionMission, Trustees, Transparency, CtaBand } from '../components/sections';
 
-export function PageAbout({ lang, team, values }) {
-  const visTeam   = team.filter(t => t.visible);
-  const visValues = values.filter(v => v.visible);
+export function PageAbout({ lang, go, team, values, pageEnabled, donateCta }) {
+  const en = lang === 'en';
+  const jump = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   return (
-    <div style={{ paddingTop: 64 }}>
-      <section style={{ background: 'var(--hero-grad)', padding: '76px 20px' }}>
-        <div className="wrap" style={{ textAlign: 'center' }}>
-          <div style={{ marginBottom: 22 }}><LogoFull size={78} lang={lang} /></div>
-          <h1 className="sxt">{lang === 'en' ? 'About Atshri' : 'अथश्री के बारे में'}</h1>
-          <p style={{ color: 'var(--mid)', maxWidth: 700, margin: '0 auto', fontSize: 17, lineHeight: 1.85 }}>
-            {lang === 'en'
-              ? 'Atshri was founded on one simple belief — every act of service, however small, creates ripples of lasting change. From distributing cool water under the scorching summer sun, to wrapping blankets around shivering shoulders in cold winter nights, to sweeping the floors of our beloved mandirs — we show up wherever we are needed, with willing hands and open hearts.'
-              : 'अथश्री की नींव एक सरल विश्वास पर रखी गई — सेवा का हर छोटा कार्य स्थायी परिवर्तन की लहर बनाता है। गर्मी में पानी, सर्दी में कम्बल, मंदिरों की सफाई — जहाँ जरूरत होती है, हम वहाँ पहुँचते हैं।'}
-          </p>
+    <>
+      <PageHeader
+        lang={lang}
+        go={go}
+        crumb={en ? 'About Us' : 'हमारे बारे में'}
+        eyebrow={en ? 'About Atshri Trust' : 'अथश्री ट्रस्ट के बारे में'}
+        title={en ? 'Every act of service creates ripples of lasting change' : 'सेवा का हर कार्य स्थायी परिवर्तन की लहर बनाता है'}
+        lead={en
+          ? 'From cool water under the summer sun to blankets on cold winter nights and the floors of our beloved mandirs — we show up wherever we are needed.'
+          : 'गर्मी में शीतल जल से लेकर सर्दी की रातों में कम्बल और हमारे प्रिय मंदिरों की सेवा तक — जहाँ आवश्यकता हो, हम वहाँ पहुँचते हैं।'}
+      >
+        <nav className="chip-row chip-row--scroll" aria-label={en ? 'On this page' : 'इस पृष्ठ पर'}>
+          {[
+            ['story', en ? 'Our story' : 'हमारी कहानी'],
+            ['vision', en ? 'Vision & Mission' : 'दृष्टि एवं मिशन'],
+            ['trustees', en ? 'Trustees' : 'ट्रस्टी'],
+            ['documents', en ? 'Documents' : 'दस्तावेज़'],
+          ].map(([id, label]) => (
+            <button key={id} type="button" className="chip" onClick={() => jump(id)}>{label}</button>
+          ))}
+        </nav>
+      </PageHeader>
+
+      {/* Story */}
+      <section className="section" id="story" aria-labelledby="story-title">
+        <div className="container split split--rev">
+          <div className="reveal">
+            <p className="eyebrow">{en ? 'Our Story' : 'हमारी कहानी'}</p>
+            <h2 id="story-title" className="h-xl">{ABOUT.title[lang]}</h2>
+            <p className="lead">{ABOUT.body[lang]}</p>
+            <blockquote className="quote">{ABOUT.quote[lang]}</blockquote>
+            <ul className="about-points">
+              {ABOUT.points.map(p => (
+                <li key={p.en}><Icon name="check" /> <span>{p[lang]}</span></li>
+              ))}
+            </ul>
+          </div>
+          <div className="reveal reveal-d1" style={{ display: 'grid', gridTemplateColumns: '1.1fr .9fr', gap: 16, alignItems: 'end' }}>
+            <div className="media" style={{ aspectRatio: '3 / 4' }}>
+              <Photo k="culture" lang={lang} sizes="(max-width: 900px) 55vw, 28vw" />
+            </div>
+            <div className="media" style={{ aspectRatio: '3 / 4', marginBottom: '18%' }}>
+              <Photo k="heritage" lang={lang} sizes="(max-width: 900px) 45vw, 22vw" />
+            </div>
+          </div>
         </div>
       </section>
 
-      {visValues.length > 0 && (
-        <section className="sec" style={{ background: 'var(--surface)' }}>
-          <div className="wrap">
-            <h2 className="sxt" style={{ textAlign: 'center', marginBottom: 36 }}>
-              {lang === 'en' ? 'Our Values' : 'हमारे मूल्य'}
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 20 }}>
-              {visValues.map(v => (
-                <div key={v.id} className="card" style={{ padding: 26 }}>
-                  <div style={{ fontSize: 34, marginBottom: 11 }}>{v.icon}</div>
-                  <h3 style={{ fontWeight: 700, color: 'var(--sf)', fontSize: 17, marginBottom: 7 }}>{v.title[lang]}</h3>
-                  <p style={{ color: 'var(--mid)', lineHeight: 1.62, fontSize: 14 }}>{v.desc[lang]}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {visTeam.length > 0 && (
-        <section className="sec pat" style={{ background: 'var(--sfp)' }}>
-          <div className="wrap">
-            <h2 className="sxt" style={{ textAlign: 'center', marginBottom: 36 }}>
-              {lang === 'en' ? 'Our Team' : 'हमारी टीम'}
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 24, maxWidth: 900, margin: '0 auto' }}>
-              {visTeam.map(m => (
-                <div key={m.id} className="card" style={{ padding: 32, textAlign: 'center' }}>
-                  <div style={{
-                    width: 72, height: 72,
-                    background: 'linear-gradient(135deg,#F4831F,#C96500)',
-                    borderRadius: '50%', display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', margin: '0 auto 13px',
-                    fontSize: 20, fontWeight: 800, color: '#fff',
-                    boxShadow: '0 4px 14px rgba(244,131,31,.35)',
-                  }}>
-                    {m.initials}
-                  </div>
-                  <div style={{ fontSize: 18, marginBottom: 5 }}>{m.badge}</div>
-                  <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 4 }}>{m.name}</h3>
-                  <div style={{ color: 'var(--sf)', fontWeight: 700, fontSize: 11, marginBottom: 11, letterSpacing: 1 }}>
-                    {m.role[lang].toUpperCase()}
-                  </div>
-                  <p style={{ color: 'var(--mid)', fontSize: 13, lineHeight: 1.62 }}>{m.desc[lang]}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-    </div>
+      <VisionMission lang={lang} values={values} />
+      <Trustees lang={lang} team={team} />
+      <Transparency lang={lang} go={go} pageEnabled={pageEnabled} />
+      <CtaBand lang={lang} go={go} pageEnabled={pageEnabled} joinId={donateCta?.targetId || 'involved'} />
+    </>
   );
 }

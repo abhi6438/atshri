@@ -9,7 +9,7 @@ export function Toggle({ on, onChange }) {
       title={on ? 'Visible (click to hide)' : 'Hidden (click to show)'}
       style={{
         width: 44, height: 24, borderRadius: 12, cursor: 'pointer', flexShrink: 0,
-        background: on ? '#F4831F' : '#D1D5DB', position: 'relative', transition: 'background .2s',
+        background: on ? 'var(--primary)' : 'var(--border)', position: 'relative', transition: 'background .2s',
       }}
     >
       <div style={{

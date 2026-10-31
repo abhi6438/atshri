@@ -31,6 +31,47 @@ import {
 const clone = x => structuredClone(x);
 const THEME_KEY = 'atshri.theme';
 
+/** Per-page <title> and meta description (bilingual). */
+const SEO = {
+  home: {
+    en: ['Atshri Trust — Seva · Samaj · Shakti | Rewa, Madhya Pradesh', 'Atshri Trust is a registered public charitable trust in Rewa, Madhya Pradesh — serving through relief, temple seva, education, health and environmental initiatives.'],
+    hi: ['अथश्री ट्रस्ट — सेवा · समाज · शक्ति | रीवा, मध्य प्रदेश', 'अथश्री ट्रस्ट रीवा, मध्य प्रदेश का पंजीकृत सार्वजनिक धर्मार्थ न्यास है — राहत, मंदिर सेवा, शिक्षा, स्वास्थ्य एवं पर्यावरण के माध्यम से सेवा।'],
+  },
+  about: {
+    en: ['About Us, Vision & Trustees — Atshri Trust', 'Our story, vision, mission, values, trustees and registration details of Atshri Trust, Rewa.'],
+    hi: ['हमारे बारे में, दृष्टि एवं ट्रस्टी — अथश्री ट्रस्ट', 'अथश्री ट्रस्ट की कहानी, दृष्टि, मिशन, मूल्य, ट्रस्टी एवं पंजीयन विवरण।'],
+  },
+  activities: {
+    en: ['Activities & Events — Atshri Trust', 'Completed and upcoming seva activities by Atshri Trust — water, blankets, temple seva, education, plantation and more.'],
+    hi: ['गतिविधियाँ एवं कार्यक्रम — अथश्री ट्रस्ट', 'अथश्री ट्रस्ट की पूर्ण एवं आगामी सेवा गतिविधियाँ।'],
+  },
+  gallery: {
+    en: ['Gallery — Photos & Videos | Atshri Trust', 'Photos, videos and reels from Atshri Trust seva activities in Rewa.'],
+    hi: ['गैलरी — तस्वीरें एवं वीडियो | अथश्री ट्रस्ट', 'अथश्री ट्रस्ट की सेवा गतिविधियों की तस्वीरें, वीडियो एवं रील।'],
+  },
+  involved: {
+    en: ['Get Involved — Volunteer & Support | Atshri Trust', 'Volunteer with Atshri Trust or support our seva initiatives in Rewa.'],
+    hi: ['जुड़ें — स्वयंसेवक बनें | अथश्री ट्रस्ट', 'अथश्री ट्रस्ट के साथ स्वयंसेवा करें या सेवा पहलों का सहयोग करें।'],
+  },
+  contact: {
+    en: ['Contact Us — Atshri Trust, Rewa', 'Get in touch with Atshri Trust, Rewa, Madhya Pradesh.'],
+    hi: ['संपर्क करें — अथश्री ट्रस्ट, रीवा', 'अथश्री ट्रस्ट, रीवा, मध्य प्रदेश से संपर्क करें।'],
+  },
+  admin: { en: ['Admin — Atshri Trust'], hi: ['एडमिन — अथश्री ट्रस्ट'] },
+  'access-denied': { en: ['Page unavailable — Atshri Trust'], hi: ['पृष्ठ उपलब्ध नहीं — अथश्री ट्रस्ट'] },
+};
+
+function setMeta(name, content) {
+  if (!content) return;
+  let el = document.querySelector(`meta[name="${name}"]`);
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute('name', name);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+}
+
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -47,7 +88,7 @@ export default function App() {
       /* ignore */
     }
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#12100e' : '#F4831F');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0b1020' : '#24346b');
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
@@ -73,6 +114,35 @@ export default function App() {
   const page = resolveInitialPage(menu, rawPage);
 
   const pageEnabled = useCallback(id => isRouteEnabled(menu, id), [menu]);
+
+  // ── SEO + document language ───────────────────────────────────────
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    const entry = (SEO[page] || SEO.home)[lang] || [];
+    if (entry[0]) document.title = entry[0];
+    setMeta('description', entry[1] || SEO.home[lang][1]);
+    setMeta('robots', page === 'admin' || page === 'access-denied' ? 'noindex' : 'index,follow');
+  }, [page, lang]);
+
+  // ── Scroll-reveal for elements with .reveal ───────────────────────
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll('.reveal:not(.is-in)'));
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(el => el.classList.add('is-in'));
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        }
+      }),
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    );
+    els.forEach(el => io.observe(el));
+    return () => io.disconnect();
+  });
 
   const go = useCallback(
     targetId => {
@@ -121,7 +191,8 @@ export default function App() {
   };
 
   return (
-    <div style={{ fontFamily: "'Baloo 2',sans-serif", minHeight: '100vh', background: 'var(--sfp)', color: 'var(--tx)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)', display: 'flex', flexDirection: 'column' }}>
+      <a href="#main" className="skip-link">{lang === 'en' ? 'Skip to content' : 'सामग्री पर जाएँ'}</a>
       <Nav
         lang={lang}
         setLang={setLang}
@@ -135,7 +206,7 @@ export default function App() {
         showDonate={showDonate}
         donateCta={donateCta}
       />
-      <main>
+      <main id="main" key={page} className="page-enter" tabIndex={-1} style={{ flex: 1, outline: 'none' }}>
         {page === 'home' && pageEnabled('home') && <PageHome {...shared} />}
         {page === 'about' && pageEnabled('about') && <PageAbout {...shared} />}
         {page === 'activities' && pageEnabled('activities') && <PageActivities {...shared} />}

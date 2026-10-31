@@ -3,7 +3,7 @@ export const TEAM = [
     id: 1,
     name: 'Maya Manoj Shrivastava',
     initials: 'MMS',
-    role: { en: 'Trustee', hi: 'ट्रस्टी' },
+    role: { en: 'Founder Trustee · Chairperson', hi: 'संस्थापक ट्रस्टी · अध्यक्ष' },
     badge: '🌟',
     desc: {
       en: "Founder and driving force behind Atshri's mission of selfless community service.",
@@ -15,7 +15,7 @@ export const TEAM = [
     id: 2,
     name: 'Pavan Shrivastava',
     initials: 'PS',
-    role: { en: 'Core Member', hi: 'मुख्य सदस्य' },
+    role: { en: 'Trustee · Secretary', hi: 'ट्रस्टी · सचिव' },
     badge: '⚙️',
     desc: {
       en: 'Leads ground operations and coordinates volunteers for all major activities.',
@@ -27,7 +27,7 @@ export const TEAM = [
     id: 3,
     name: 'Abhishek Shrivastav',
     initials: 'AS',
-    role: { en: 'Core Member', hi: 'मुख्य सदस्य' },
+    role: { en: 'Trustee · Treasurer', hi: 'ट्रस्टी · कोषाध्यक्ष' },
     badge: '🤝',
     desc: {
       en: 'Manages community outreach and connects the trust with people who need support.',

@@ -1,116 +1,83 @@
 import { Logo, LogoName } from '../common/Logo';
+import { Icon, XLogo } from '../common/Icon';
+import SITE from '../../data/site.json';
 
 export function Footer({ lang, go, cats, menu }) {
   const quick = (menu || []).filter(m => m.enabled !== false);
+  const t = SITE.trust;
+  const c = SITE.contact || {};
+  const s = SITE.social || {};
 
   return (
-    <footer style={{ background: '#1C1410', color: 'rgba(255,255,255,.75)', padding: '50px 20px 22px' }}>
-      <div className="wrap">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(185px,1fr))', gap: 30, marginBottom: 38 }}>
-
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 9 }}>
-              <Logo size={40} />
+    <footer className="site-footer" aria-labelledby="footer-title">
+      <div className="container">
+        <h2 id="footer-title" className="sr-only">{lang === 'en' ? 'Site footer' : 'फ़ुटर'}</h2>
+        <div className="footer-top">
+          <div className="footer-brand">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <Logo size={48} />
               <div>
-                <LogoName light lang={lang} />
-                <div
-                  style={{
-                    fontSize: lang === 'hi' ? 8.5 : 9,
-                    color: 'rgba(251,168,50,.65)',
-                    fontWeight: 700,
-                    letterSpacing: lang === 'hi' ? 0.8 : 2.2,
-                    marginTop: 2,
-                  }}
-                >
-                  {lang === 'en' ? 'SEVA · SAMAJ · SHAKTI' : 'सेवा · समाज · शक्ति'}
+                <LogoName light lang={lang} size={24} />
+                <div className="brand__sub" style={{ color: 'var(--gold-300)' }}>
+                  {t?.name[lang] || 'Atshri Trust'}
                 </div>
               </div>
             </div>
-            <p style={{ fontSize: 13, lineHeight: 1.9, color: 'rgba(255,255,255,.5)', marginTop: 10 }}>
-              सेवा · समाज · शक्ति<br />Rewa, Madhya Pradesh
+            <p>
+              {lang === 'en'
+                ? 'A registered public charitable trust in Rewa, Madhya Pradesh — serving through relief, cultural seva, education, health and care for nature.'
+                : 'रीवा, मध्य प्रदेश का एक पंजीकृत सार्वजनिक धर्मार्थ न्यास — राहत, सांस्कृतिक सेवा, शिक्षा, स्वास्थ्य एवं प्रकृति संरक्षण के माध्यम से सेवा।'}
             </p>
-          </div>
-
-          <div>
-            <h4 style={{ color: '#F4831F', fontWeight: 700, marginBottom: 13 }}>
-              {lang === 'en' ? 'Quick Links' : 'लिंक'}
-            </h4>
-            {quick.map(m => (
-              <div
-                key={m.id}
-                onClick={() => go(m.id)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={e => e.key === 'Enter' && go(m.id)}
-                style={{ cursor: 'pointer', marginBottom: 7, fontSize: 13, transition: 'color .2s' }}
-                onMouseEnter={e => (e.target.style.color = '#F4831F')}
-                onMouseLeave={e => (e.target.style.color = 'rgba(255,255,255,.75)')}
-              >
-                {m.label[lang]}
-              </div>
-            ))}
-          </div>
-
-          <div>
-            <h4 style={{ color: '#F4831F', fontWeight: 700, marginBottom: 13 }}>
-              {lang === 'en' ? 'Our Seva' : 'हमारी सेवा'}
-            </h4>
-            {cats.slice(0, 5).map(c => (
-              <div key={c.id} style={{ fontSize: 13, marginBottom: 6 }}>
-                {c.icon} {c.name[lang]}
-              </div>
-            ))}
-          </div>
-
-          <div>
-            <h4 style={{ color: '#F4831F', fontWeight: 700, marginBottom: 13 }}>
-              {lang === 'en' ? 'Contact' : 'संपर्क'}
-            </h4>
-            <p style={{ fontSize: 13, lineHeight: 2, color: 'rgba(255,255,255,.55)' }}>
-              📍 Rewa, MP<br />
-              📧{' '}
-              <a href="mailto:info@atshri.org" style={{ color: 'inherit', textDecoration: 'underline' }}>info@atshri.org</a>
-              <br />
-              📧{' '}
-              <a href="mailto:atshri.trust@gmail.com" style={{ color: 'inherit', textDecoration: 'underline' }}>atshri.trust@gmail.com</a>
-              <br />
-              🙏 Maya Manoj Shrivastava
-            </p>
-            <p style={{ fontSize: 13, lineHeight: 2, color: 'rgba(255,255,255,.55)', marginTop: 12 }}>
-              <span style={{ color: '#F4831F', fontWeight: 700, display: 'block', marginBottom: 6 }}>
-                {lang === 'en' ? 'Follow' : 'फॉलो'}
-              </span>
-              <a
-                href="https://www.youtube.com/@atshri"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: 'inherit', textDecoration: 'underline', marginRight: 14 }}
-              >
-                YouTube
-              </a>
-              <a
-                href="https://x.com/AtshriTrust"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: 'inherit', textDecoration: 'underline' }}
-              >
-                X / Twitter
-              </a>
-            </p>
-            <div
-              onClick={() => go('admin')}
-              role="button"
-              tabIndex={0}
-              onKeyDown={e => e.key === 'Enter' && go('admin')}
-              style={{ marginTop: 14, fontSize: 11, color: 'rgba(255,255,255,.2)', cursor: 'pointer' }}
-            >
-              Admin →
+            <p className="mantra">सेवा परमो धर्मः</p>
+            <div className="footer-social">
+              {s.youtube && <a href={s.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Icon name="youtube" /></a>}
+              {s.instagram && <a href={s.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Icon name="instagram" /></a>}
+              {c.x && <a href={c.x} target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><XLogo width="15" height="15" /></a>}
             </div>
+          </div>
+
+          <nav aria-label={lang === 'en' ? 'Footer' : 'फ़ुटर लिंक'}>
+            <h3>{lang === 'en' ? 'Explore' : 'देखें'}</h3>
+            <ul>
+              {quick.map(m => (
+                <li key={m.id}>
+                  <button type="button" className="footer-link" onClick={() => go(m.id)}>{m.label[lang]}</button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div>
+            <h3>{lang === 'en' ? 'Our Seva' : 'हमारी सेवा'}</h3>
+            <ul>
+              {cats.slice(0, 6).map(cat => <li key={cat.id}>{cat.name[lang]}</li>)}
+            </ul>
+          </div>
+
+          <div>
+            <h3>{lang === 'en' ? 'Contact' : 'संपर्क'}</h3>
+            <ul>
+              <li>{c.address?.[lang] || 'Rewa, MP'}</li>
+              {(c.emails || []).map(e => (
+                <li key={e}><a href={`mailto:${e}`}>{e}</a></li>
+              ))}
+              {c.phone && <li><a href={`tel:${c.phone.replace(/\s/g, '')}`}>{c.phone}</a></li>}
+            </ul>
           </div>
         </div>
 
-        <div style={{ borderTop: '1px solid rgba(255,255,255,.08)', paddingTop: 18, textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,.3)' }}>
-          © {new Date().getFullYear()} Atshri. All rights reserved. | Made with ❤️ for community service
+        <div className="footer-bottom">
+          <span>
+            © {new Date().getFullYear()} {t?.name[lang] || 'Atshri'}. {lang === 'en' ? 'All rights reserved.' : 'सर्वाधिकार सुरक्षित।'}
+          </span>
+          {t?.regNo && (
+            <span>
+              {t.type[lang]} · {lang === 'en' ? 'Reg. No.' : 'पंजीयन क्र.'} <span className="reg">{t.regNo}</span>
+            </span>
+          )}
+          <button type="button" className="footer-link footer-admin" onClick={() => go('admin')}>
+            Admin
+          </button>
         </div>
       </div>
     </footer>
