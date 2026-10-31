@@ -4,7 +4,7 @@ import { ABOUT, FOCUS_AREAS } from '../data/content';
 import { ActCard } from '../components/ActCard';
 import { VideoModal } from '../components/common/VideoModal';
 import { Icon } from '../components/common/Icon';
-import { Photo, VisionMission, Trustees, Transparency, CtaBand } from '../components/sections';
+import { Photo, VisionMission, Trustees, Transparency, CtaBand, EventHighlight } from '../components/sections';
 import { buildPlaylist, fmtDate, videosOf, ytThumb } from '../utils/media';
 
 const FOCUS_LAYOUT = ['focus--a', 'focus--b', 'focus--c', 'focus--d', 'focus--e', 'focus--f'];
@@ -15,9 +15,13 @@ export function PageHome({ lang, go, acts, cats, stats, team, values, pageEnable
 
   const playlist = buildPlaylist(acts, lang);
   const featured = acts.filter(a => a.featured).slice(0, 3);
-  const upcoming = [...acts.filter(a => a.upcoming)]
-    .sort((a, b) => String(a.date).localeCompare(String(b.date)))
-    .slice(0, 4);
+  const today = new Date().toISOString().slice(0, 10);
+  const byDate = (a, b) => String(a.date).localeCompare(String(b.date));
+  const allUpcoming = acts.filter(a => a.upcoming);
+  const future = allUpcoming.filter(a => (a.endDate || a.date) >= today).sort(byDate);
+  // future events first; fall back to everything marked upcoming
+  const upcoming = (future.length ? future : [...allUpcoming].sort(byDate)).slice(0, 4);
+  const highlight = future.filter(a => a.highlight);
   const doneCount = acts.filter(a => !a.upcoming).length;
   const visStats = stats
     .filter(s => s.visible)
@@ -96,6 +100,9 @@ export function PageHome({ lang, go, acts, cats, stats, team, values, pageEnable
           </div>
         </div>
       )}
+
+      {/* ── BIG UPCOMING EVENT ─────────────────────────────── */}
+      <EventHighlight lang={lang} go={go} pageEnabled={pageEnabled} events={highlight} />
 
       {/* ── ABOUT INTRO ────────────────────────────────────── */}
       <section className="section" aria-labelledby="about-title">

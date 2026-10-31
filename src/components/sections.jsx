@@ -220,3 +220,82 @@ export function CtaBand({ lang, go, pageEnabled, joinId = 'involved' }) {
     </section>
   );
 }
+
+/** Prominent band for big upcoming events (activities with `highlight: true`). */
+export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
+  if (!events.length) return null;
+  const en = lang === 'en';
+  const sorted = [...events].sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  const main = sorted[0];
+  const last = sorted[sorted.length - 1];
+  const fmt = d => fmtDate(d, lang, { day: 'numeric', month: 'long' });
+  const range = `${fmt(main.date)} – ${fmt(last.endDate || last.date)} ${new Date(`${main.date}T00:00:00`).getFullYear()}`;
+  const start = new Date(`${main.date}T00:00:00`);
+  const days = Math.ceil((start - new Date()) / 86400000);
+  const ig = sorted.find(e => e.instagram)?.instagram;
+  const igEmbed = ig ? `${ig.split('?')[0].replace(/\/?$/, '/')}embed/` : null;
+
+  return (
+    <section className="section section--tight" aria-labelledby="mahotsav-title">
+      <div className="container">
+        <div className="mahotsav reveal">
+          <div className="mahotsav__body">
+            <p className="eyebrow">{en ? 'Upcoming Mahotsav · You are invited' : 'आगामी महोत्सव · सादर आमंत्रण'}</p>
+            <h2 id="mahotsav-title">{main.heading[lang]}</h2>
+            <p className="mahotsav__dates">{range}{main.venue ? ` · ${main.venue[lang]}` : ''}</p>
+            <p className="lead">{main.text[lang]}</p>
+            <ul className="mahotsav__sched">
+              {sorted.map(ev => (
+                <li key={ev.id}>
+                  <strong>
+                    {ev.endDate
+                      ? `${fmtDate(ev.date, lang, { day: 'numeric', month: 'short' })} – ${fmtDate(ev.endDate, lang, { day: 'numeric', month: 'short' })}`
+                      : fmtDate(ev.date, lang, { day: 'numeric', month: 'short' })}
+                  </strong>
+                  <span>{ev.heading[lang]}</span>
+                </li>
+              ))}
+            </ul>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+              {pageEnabled('contact') && (
+                <button type="button" className="btn btn-gold" onClick={() => go('contact')}>
+                  {en ? 'Contact for details' : 'जानकारी हेतु संपर्क करें'} <Icon name="arrow" className="arrow" />
+                </button>
+              )}
+              {pageEnabled('activities') && (
+                <button type="button" className="btn btn-ghost-light" onClick={() => go('activities')}>
+                  {en ? 'All upcoming events' : 'सभी आगामी कार्यक्रम'}
+                </button>
+              )}
+            </div>
+          </div>
+          <div className={`mahotsav__media${igEmbed ? ' mahotsav__media--reel' : ''}`}>
+            {igEmbed ? (
+              <>
+                <iframe
+                  src={igEmbed}
+                  title={en ? 'Bhagwat Katha invitation on Instagram' : 'इंस्टाग्राम पर भागवत कथा आमंत्रण'}
+                  loading="lazy"
+                  allow="encrypted-media; picture-in-picture"
+                  allowFullScreen
+                  scrolling="no"
+                />
+                <a className="link-arrow reel-link" href={ig} target="_blank" rel="noopener noreferrer">
+                  {en ? 'Open on Instagram' : 'इंस्टाग्राम पर देखें'} <Icon name="external" />
+                </a>
+              </>
+            ) : (
+              <Photo k="culture" lang={lang} sizes="(max-width: 860px) 100vw, 40vw" />
+            )}
+            {days > 0 && (
+              <div className="countdown" aria-label={en ? `${days} days to go` : `${days} दिन शेष`}>
+                <b>{days}</b>
+                <small>{en ? (days === 1 ? 'day to go' : 'days to go') : 'दिन शेष'}</small>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
