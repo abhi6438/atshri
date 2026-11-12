@@ -339,8 +339,8 @@ export function Memorial({ lang, go, pageEnabled }) {
           <p className="memorial__blessing">
             <span aria-hidden="true">🪔</span>
             {en
-              ? 'With the blessings of our ancestors — Late Shri Mahadev Prasad Shrivastava, Late Shrimati Kamla Shrivastava and Late Shri Rambihari Shrivastava.'
-              : 'पूर्वजों के आशीर्वाद से — स्व. श्री महादेव प्रसाद श्रीवास्तव, स्व. श्रीमती कमला श्रीवास्तव एवं स्व. श्री रामबिहारी श्रीवास्तव।'}
+              ? 'With the blessings of our ancestors — Late Shri Mahadev Prasad Shrivastava, Late Shrimati Kamla Shrivastava, Late Shri Rambihari Shrivastava and Late Shri Buland Prasad Shrivastava.'
+              : 'पूर्वजों के आशीर्वाद से — स्व. श्री महादेव प्रसाद श्रीवास्तव, स्व. श्रीमती कमला श्रीवास्तव, स्व. श्री रामबिहारी श्रीवास्तव एवं स्व. श्री बुलंद प्रसाद श्रीवास्तव।'}
           </p>
           {pageEnabled && pageEnabled('about') && (
             <button type="button" className="link-arrow" onClick={() => { go('about'); setTimeout(() => document.getElementById('heritage')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 450); }}>
@@ -370,6 +370,11 @@ export function Lineage({ lang }) {
               <div className="lineage__media">
                 {g.portrait ? (
                   <ArchPortrait lang={lang} size="sm" />
+                ) : !g.photo ? (
+                  <div className="lineage__placeholder" aria-hidden="true">
+                    <span className="lineage__om">ॐ</span>
+                    <span className="lineage__ph-name">{g.names[lang]}</span>
+                  </div>
                 ) : (
                   <img src={g.photo.src} srcSet={`${g.photo.small} 640w, ${g.photo.src} 1200w`} sizes="(max-width: 700px) 100vw, 360px" alt={g.names[lang]} loading="lazy" decoding="async" />
                 )}

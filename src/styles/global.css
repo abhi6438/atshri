@@ -750,6 +750,9 @@ html[lang='hi'] .memorial__sub { font-family: var(--font-hi); font-style: normal
 .lineage::before { content: ''; position: absolute; left: 50%; top: 20px; bottom: 20px; width: 1px; background: linear-gradient(var(--gold), color-mix(in srgb, var(--gold) 30%, transparent)); transform: translateX(-50%); }
 .lineage__item { position: relative; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(18px, 3vw, 32px); align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: clamp(16px, 2.4vw, 24px); box-shadow: var(--shadow-sm); }
 .lineage__media > img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; object-position: center 25%; border-radius: var(--radius); }
+.lineage__placeholder { aspect-ratio: 3 / 2; border-radius: var(--radius); border: 1px solid var(--gold); background: radial-gradient(circle at 50% 40%, var(--surface) 0%, var(--bg-alt, var(--surface)) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; text-align: center; }
+.lineage__om { font-size: clamp(2.4rem, 5vw, 3.2rem); line-height: 1; color: var(--gold); }
+.lineage__ph-name { font-size: var(--fs-sm); color: var(--text-muted); letter-spacing: .02em; }
 .lineage__item--main { border-color: var(--gold); box-shadow: var(--shadow); }
 .lineage__item--main .lineage__media { display: flex; justify-content: center; }
 .lineage__body h3 { font-size: 1.3rem; margin: 6px 0 10px; }
