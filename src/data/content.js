@@ -116,8 +116,8 @@ export const LINEAGE = [
     relation: { en: 'Great-great-grandfather — the eldest of our lineage', hi: 'प्रपरदादा — वंश के सबसे पूज्य पूर्वज' },
     names: { en: 'Late Shri Buland Prasad Shrivastava', hi: 'स्व. श्री बुलंद प्रसाद श्रीवास्तव' },
     text: {
-      en: 'The eldest ancestor of our family, from whom our lineage begins. Father of Late Shri Rambihari Shrivastava — his blessings rest over every generation that followed.',
-      hi: 'हमारे परिवार के सबसे पूज्य पूर्वज, जिनसे हमारे वंश की शुरुआत होती है। स्व. श्री रामबिहारी श्रीवास्तव के पिताजी — उनका आशीर्वाद आगे की हर पीढ़ी पर बना हुआ है।',
+      en: 'The eldest ancestor of our family, from whom our lineage begins. Father of Late Shri Rambihari Shrivastava, he built the Shri Radha Krishna Mandir in our ancestral village Atariya — his blessings rest over every generation that followed.',
+      hi: 'हमारे परिवार के सबसे पूज्य पूर्वज, जिनसे हमारे वंश की शुरुआत होती है। स्व. श्री रामबिहारी श्रीवास्तव के पिताजी, जिन्होंने पैतृक गाँव अटरिया में श्री राधाकृष्ण मंदिर का निर्माण कराया — उनका आशीर्वाद आगे की हर पीढ़ी पर बना हुआ है।',
     },
   },
   {

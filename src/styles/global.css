@@ -692,6 +692,17 @@ html[lang='hi'] .focus__tag { letter-spacing: .03em; text-transform: none; font-
 .mahotsav__dates { font-family: var(--font-serif); font-size: var(--fs-lg); color: var(--gold-300); margin-bottom: 18px; }
 html[lang='hi'] .mahotsav__dates { font-family: var(--font-hi); }
 .mahotsav p.lead { color: var(--on-deep-muted); }
+.mahotsav__facts { list-style: none; display: grid; gap: 10px; margin: 22px 0 0; }
+.mahotsav__facts li { display: flex; gap: 10px; align-items: flex-start; color: #fff; font-size: var(--fs-sm); line-height: 1.6; }
+.mahotsav__facts svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; color: var(--gold-300); }
+.mahotsav__facts b { color: var(--gold-300); font-weight: 600; }
+.mahotsav__program { margin-top: 20px; border: 1px solid rgba(214, 190, 146, .35); border-radius: var(--radius); padding: 12px 16px; }
+.mahotsav__program summary { cursor: pointer; color: var(--gold-300); font-weight: 600; font-size: var(--fs-sm); }
+.mahotsav__program ol { list-style: none; margin: 12px 0 0; display: grid; gap: 0; }
+.mahotsav__program li { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 9px 0; border-top: 1px solid rgba(214, 190, 146, .2); font-size: var(--fs-sm); }
+.mahotsav__program li strong { color: var(--gold-300); font-weight: 600; }
+.mahotsav__program li span { color: #fff; }
+@media (max-width: 480px) { .mahotsav__program li { grid-template-columns: 1fr; gap: 2px; } }
 .mahotsav__sched { list-style: none; display: grid; gap: 0; margin: 26px 0 30px; border-top: 1px solid rgba(214, 190, 146, .25); }
 .mahotsav__sched li { display: grid; grid-template-columns: 150px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(214, 190, 146, .25); }
 .mahotsav__sched strong { color: var(--gold-300); font-weight: 600; font-size: var(--fs-sm); }

@@ -246,6 +246,26 @@ export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
             <h2 id="mahotsav-title">{main.heading[lang]}</h2>
             <p className="mahotsav__dates">{range}{main.venue ? ` · ${main.venue[lang]}` : ''}</p>
             <p className="lead">{main.text[lang]}</p>
+            {(main.kathaVyas || main.timings) && (
+              <ul className="mahotsav__facts">
+                {main.kathaVyas && <li><Icon name="heart" /><span><b>{en ? 'Katha vyas' : 'कथा व्यास'}:</b> {main.kathaVyas[lang]}</span></li>}
+                {main.timings?.map((t, i) => <li key={i}><Icon name="clock" /><span>{t[lang]}</span></li>)}
+                {main.venue && <li><Icon name="pin" /><span>{main.venue[lang]}</span></li>}
+              </ul>
+            )}
+            {main.program?.length > 0 && (
+              <details className="mahotsav__program">
+                <summary>{en ? 'Day-wise programme (8 days)' : 'साप्ताहिक कार्यक्रम (दिनवार)'}</summary>
+                <ol>
+                  {main.program.map(d => (
+                    <li key={d.date}>
+                      <strong>{fmtDate(d.date, lang, { weekday: 'short', day: 'numeric', month: 'short' })}</strong>
+                      <span>{d[lang]}</span>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            )}
             <ul className="mahotsav__sched">
               {sorted.map(ev => (
                 <li key={ev.id}>
@@ -263,6 +283,11 @@ export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
                 <button type="button" className="btn btn-gold" onClick={() => go('contact')}>
                   {en ? 'Contact for details' : 'जानकारी हेतु संपर्क करें'} <Icon name="arrow" className="arrow" />
                 </button>
+              )}
+              {main.live && SITE.social?.youtube && (
+                <a className="btn btn-ghost-light" href={SITE.social.youtube} target="_blank" rel="noopener noreferrer">
+                  <Icon name="youtube" /> {main.live[lang]}
+                </a>
               )}
               {pageEnabled('activities') && (
                 <button type="button" className="btn btn-ghost-light" onClick={() => go('activities')}>
