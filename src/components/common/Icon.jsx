@@ -2,6 +2,8 @@
 const P = {
   arrow: <path d="M5 12h14M13 6l6 6-6 6" />,
   arrowLeft: <path d="M19 12H5M11 18l-6-6 6-6" />,
+  whatsapp: <><path d="M4 20l1.2-3.8A8 8 0 1112 20a8 8 0 01-3.9-1z" /><path d="M9 8.5c0 3 2.5 5.5 5.5 6l1-1.3-1.8-.9-.8.8a4 4 0 01-2.5-2.5l.8-.8-.9-1.8z" /></>,
+  image: <><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="9" cy="10" r="2" /><path d="M21 16l-5-5-8 9" /></>,
   play: <path d="M7 4.5v15l13-7.5z" fill="currentColor" stroke="none" />,
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   close: <path d="M6 6l12 12M18 6L6 18" />,

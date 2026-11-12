@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import SITE from '../data/site.json';
 import { VISION, MISSION, MEMORIAL, LINEAGE } from '../data/content';
 import { Icon } from './common/Icon';
@@ -222,7 +223,54 @@ export function CtaBand({ lang, go, pageEnabled, joinId = 'involved' }) {
 }
 
 /** Prominent band for big upcoming events (activities with `highlight: true`). */
+/** Full-screen viewer for the printed invitation card(s). */
+function CardViewer({ cards, lang, onClose }) {
+  const en = lang === 'en';
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const onKey = e => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight') setI(v => Math.min(v + 1, cards.length - 1));
+      if (e.key === 'ArrowLeft') setI(v => Math.max(v - 1, 0));
+    };
+    document.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prev; };
+  }, [cards.length, onClose]);
+  return (
+    <div className="card-viewer" role="dialog" aria-modal="true" aria-label={en ? 'Invitation card' : 'निमंत्रण पत्र'} onClick={onClose}>
+      <div className="card-viewer__inner" onClick={e => e.stopPropagation()}>
+        <button type="button" className="card-viewer__close" onClick={onClose} aria-label={en ? 'Close' : 'बंद करें'}><Icon name="close" /></button>
+        <img src={cards[i]} alt={`${en ? 'Invitation card' : 'निमंत्रण पत्र'} ${i + 1}/${cards.length}`} />
+        <div className="card-viewer__bar">
+          <button type="button" className="btn btn-ghost-light" disabled={i === 0} onClick={() => setI(i - 1)} aria-label={en ? 'Previous' : 'पिछला'}><Icon name="arrowLeft" /></button>
+          <span>{i + 1} / {cards.length}</span>
+          <button type="button" className="btn btn-ghost-light" disabled={i === cards.length - 1} onClick={() => setI(i + 1)} aria-label={en ? 'Next' : 'अगला'}><Icon name="arrow" /></button>
+          <a className="btn btn-gold" href={cards[i]} download={`atshri-bhagwat-katha-nimantran-${i + 1}.webp`}>{en ? 'Download' : 'डाउनलोड'}</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function shareText(ev, lang) {
+  const url = typeof window !== 'undefined' ? window.location.origin : 'https://atshri.org';
+  const L = lang === 'en' ? 'en' : 'hi';
+  const range = `${fmtDate(ev.date, lang, { day: 'numeric', month: 'long' })} – ${fmtDate(ev.endDate || ev.date, lang, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+  const lines = [
+    L === 'en' ? `🙏 You and your family are warmly invited to the ${ev.heading.en}` : `🙏 ${ev.heading.hi} में आप सपरिवार सादर आमंत्रित हैं`,
+    `📅 ${range}`,
+    ev.venue ? `📍 ${ev.venue[L]}` : '',
+    ...(ev.timings || []).map(t => `🕗 ${t[L]}`),
+    '',
+    `${L === 'en' ? 'Full programme & invitation card' : 'पूरा कार्यक्रम एवं निमंत्रण पत्र'}: ${url}`,
+  ];
+  return lines.filter((l, idx) => l || idx === lines.length - 2).join('\n');
+}
+
 export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
+  const [viewer, setViewer] = useState(false);
   if (!events.length) return null;
   const en = lang === 'en';
   const sorted = [...events].sort((a, b) => String(a.date).localeCompare(String(b.date)));
@@ -284,6 +332,14 @@ export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
                   {en ? 'Contact for details' : 'जानकारी हेतु संपर्क करें'} <Icon name="arrow" className="arrow" />
                 </button>
               )}
+              {main.cards?.length > 0 && (
+                <button type="button" className="btn btn-gold" onClick={() => setViewer(true)}>
+                  <Icon name="image" /> {en ? 'View invitation card' : 'निमंत्रण पत्र देखें'}
+                </button>
+              )}
+              <a className="btn btn-whatsapp" href={`https://wa.me/?text=${encodeURIComponent(shareText(main, lang))}`} target="_blank" rel="noopener noreferrer">
+                <Icon name="whatsapp" /> {en ? 'Share on WhatsApp' : 'व्हाट्सऐप पर भेजें'}
+              </a>
               {main.live && SITE.social?.youtube && (
                 <a className="btn btn-ghost-light" href={SITE.social.youtube} target="_blank" rel="noopener noreferrer">
                   <Icon name="youtube" /> {main.live[lang]}
@@ -329,6 +385,7 @@ export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
           </div>
         </div>
       </div>
+      {viewer && main.cards?.length > 0 && <CardViewer cards={main.cards} lang={lang} onClose={() => setViewer(false)} />}
     </section>
   );
 }

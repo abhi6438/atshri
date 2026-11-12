@@ -365,6 +365,7 @@ export const ACTIVITIES = [
       { en: 'Katha: 3 PM – 7 PM', hi: 'कथा: दोपहर 3 से शाम 7 बजे तक' },
     ],
     live: { en: 'Live on our YouTube channel', hi: 'कथा का सीधा प्रसारण हमारे यूट्यूब चैनल पर' },
+    cards: ['/images/katha/nimantran-1.webp', '/images/katha/nimantran-2.webp'],
     program: [
       { date: '2026-11-15', en: 'Kalash yatra, village procession & katha begins', hi: 'कलश यात्रा, ग्राम भ्रमण एवं कथा प्रारंभ' },
       { date: '2026-11-16', en: 'Shri Shukdev aagman, Kapil upakhyan, Sati charitra & Dhruv charitra', hi: 'श्री शुकदेव आगमन, श्री कपिल उपाख्यान, सती चरित्र एवं ध्रुव चरित्र' },
