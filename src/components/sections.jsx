@@ -255,7 +255,8 @@ function CardViewer({ cards, lang, onClose }) {
 }
 
 function shareText(ev, lang) {
-  const url = typeof window !== 'undefined' ? window.location.origin : 'https://atshri.org';
+  const base = typeof window !== 'undefined' ? window.location.origin : 'https://atshri.org';
+  const url = `${base}/${ev.cards?.length ? '#nimantran' : '#katha'}`;
   const L = lang === 'en' ? 'en' : 'hi';
   const range = `${fmtDate(ev.date, lang, { day: 'numeric', month: 'long' })} – ${fmtDate(ev.endDate || ev.date, lang, { day: 'numeric', month: 'long', year: 'numeric' })}`;
   const lines = [
@@ -271,6 +272,21 @@ function shareText(ev, lang) {
 
 export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
   const [viewer, setViewer] = useState(false);
+  const hasCards = events.some(e => e.cards?.length);
+  // Shared links: /#katha scrolls to this band, /#nimantran also opens the invitation card.
+  useEffect(() => {
+    const h = window.location.hash;
+    if (!events.length || (h !== '#katha' && h !== '#nimantran')) return;
+    const t = setTimeout(() => {
+      const el = document.getElementById('katha');
+      if (el) {
+        el.querySelectorAll('.reveal').forEach(r => r.classList.add('is-in'));
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (h === '#nimantran' && hasCards) setViewer(true);
+    }, 350);
+    return () => clearTimeout(t);
+  }, [events.length, hasCards]);
   if (!events.length) return null;
   const en = lang === 'en';
   const sorted = [...events].sort((a, b) => String(a.date).localeCompare(String(b.date)));
@@ -286,7 +302,7 @@ export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
   const igEmbed = reels.length > 0;
 
   return (
-    <section className="section section--tight" aria-labelledby="mahotsav-title">
+    <section className="section section--tight" id="katha" aria-labelledby="mahotsav-title" style={{ scrollMarginTop: 80 }}>
       <div className="container">
         <div className={`mahotsav${reels.length > 1 ? ' mahotsav--two' : ''} reveal`}>
           <div className="mahotsav__body">
