@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import SITE from '../data/site.json';
 import { VISION, MISSION, MEMORIAL, LINEAGE } from '../data/content';
 import { Icon } from './common/Icon';
@@ -238,7 +239,7 @@ function CardViewer({ cards, lang, onClose }) {
     document.body.style.overflow = 'hidden';
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prev; };
   }, [cards.length, onClose]);
-  return (
+  return createPortal(
     <div className="card-viewer" role="dialog" aria-modal="true" aria-label={en ? 'Invitation card' : 'निमंत्रण पत्र'} onClick={onClose}>
       <div className="card-viewer__inner" onClick={e => e.stopPropagation()}>
         <button type="button" className="card-viewer__close" onClick={onClose} aria-label={en ? 'Close' : 'बंद करें'}><Icon name="close" /></button>
@@ -248,9 +249,11 @@ function CardViewer({ cards, lang, onClose }) {
           <span>{i + 1} / {cards.length}</span>
           <button type="button" className="btn btn-ghost-light" disabled={i === cards.length - 1} onClick={() => setI(i + 1)} aria-label={en ? 'Next' : 'अगला'}><Icon name="arrow" /></button>
           <a className="btn btn-gold" href={cards[i]} download={`atshri-bhagwat-katha-nimantran-${i + 1}.webp`}>{en ? 'Download' : 'डाउनलोड'}</a>
+          <button type="button" className="btn btn-ghost-light" onClick={onClose}><Icon name="close" /> {en ? 'Close' : 'बंद करें'}</button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
