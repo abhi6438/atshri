@@ -261,16 +261,9 @@ function shareText(ev, lang) {
   const base = typeof window !== 'undefined' ? window.location.origin : 'https://atshri.org';
   const url = `${base}/${ev.cards?.length ? '#nimantran' : '#katha'}`;
   const L = lang === 'en' ? 'en' : 'hi';
+  if (ev.shareMessage?.[L]) return `${ev.shareMessage[L]}\n${url}`;
   const range = `${fmtDate(ev.date, lang, { day: 'numeric', month: 'long' })} – ${fmtDate(ev.endDate || ev.date, lang, { day: 'numeric', month: 'long', year: 'numeric' })}`;
-  const lines = [
-    L === 'en' ? `🙏 You and your family are warmly invited to the ${ev.heading.en}` : `🙏 ${ev.heading.hi} में आप सपरिवार सादर आमंत्रित हैं`,
-    `📅 ${range}`,
-    ev.venue ? `📍 ${ev.venue[L]}` : '',
-    ...(ev.timings || []).map(t => `🕗 ${t[L]}`),
-    '',
-    `${L === 'en' ? 'Full programme & invitation card' : 'पूरा कार्यक्रम एवं निमंत्रण पत्र'}: ${url}`,
-  ];
-  return lines.filter((l, idx) => l || idx === lines.length - 2).join('\n');
+  return [`*${ev.heading[L]}*`, `✦ ${range}`, ev.venue ? `✦ ${ev.venue[L]}` : '', '', url].filter((l, i, arr) => l || i === arr.length - 2).join('\n');
 }
 
 export function EventHighlight({ lang, go, pageEnabled, events = [] }) {
